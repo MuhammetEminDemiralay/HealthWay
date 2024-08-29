@@ -12,8 +12,6 @@ const OnboardingScreen = () => {
     return (
         <View style={styles.container}>
             <Text>Onboarding screen</Text>
-            <Button title='registera' onPress={() => navigation.navigate("register")} />
-
         </View>
     )
 }

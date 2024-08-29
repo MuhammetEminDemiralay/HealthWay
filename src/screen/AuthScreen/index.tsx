@@ -3,7 +3,7 @@ import React from 'react'
 import { View } from 'react-native'
 import InitialScreen from './InitialScreen'
 import LoginScreen from './LoginScreen'
-import RegisteScreen from './RegisterScreen'
+import RegisterScreen from './RegisterScreen'
 import OnboardingScreen from './OnboardingScreen'
 
 const Stack = createNativeStackNavigator()
@@ -25,7 +25,7 @@ const AuthScreen = () => {
             />
             <Stack.Screen
                 name='register'
-                component={RegisteScreen}
+                component={RegisterScreen}
             />
             <Stack.Screen
                 name='onboarding'

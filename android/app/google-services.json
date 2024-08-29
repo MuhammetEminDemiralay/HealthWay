@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "729381340976",
+    "project_id": "healthway-5e880",
+    "storage_bucket": "healthway-5e880.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729381340976:android:805920c7d5f2724b006af5",
+        "android_client_info": {
+          "package_name": "com.anonymous.HealthWay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5GeH8-iAXnjca92E23PAkbstPePN4dOk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,16 +1,18 @@
-import { StatusBar, StatusBarProps } from 'expo-status-bar';
-import { Dimensions, Platform, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { Dimensions, StyleSheet, } from 'react-native';
 import RootNavigation from './src/navigation/rootNavigation';
+import { Provider } from 'react-redux';
+import store from './src/redux/store';
 
 const { width, height } = Dimensions.get("screen")
 
 export default function App() {
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor='skyblue' style='light' translucent={false} hidden={false} />
+    <Provider store={store}>
+      <StatusBar backgroundColor='#000000' style='light' translucent={false} hidden={false} />
       <RootNavigation />
-    </SafeAreaView>
+    </Provider>
   );
 }
 
