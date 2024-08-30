@@ -1,16 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import UserStack from './userStack';
 import AuthStack from './authStack';
 import { NavigationContainer } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { autoLogin } from '../redux/authSlice';
 
 const RootNavigation = () => {
 
-    const auth = false;
+    const { isAuth } = useSelector((state: any) => state.auth)
+
+
 
     return (
         <NavigationContainer>
             {
-                auth ? <UserStack /> : <AuthStack />
+                isAuth ? <UserStack /> : <AuthStack />
             }
         </NavigationContainer >
     )

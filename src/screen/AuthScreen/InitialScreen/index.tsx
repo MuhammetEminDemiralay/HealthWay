@@ -1,16 +1,24 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Dimensions, Text, View } from 'react-native'
 import { styles } from './styles'
 import { useNavigation } from '@react-navigation/native'
 import CustomBtn from '../../../component/customBtn'
 import LottieView from 'lottie-react-native'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useDispatch } from 'react-redux'
+import { autoLogin } from '../../../redux/authSlice'
 
 const { width, height } = Dimensions.get("window")
 
 const InitialScreen = () => {
 
     const navigation: any = useNavigation()
+    const dispatch: any = useDispatch()
+
+
+    useEffect(() => {
+        dispatch(autoLogin())
+    }, [])
 
 
 

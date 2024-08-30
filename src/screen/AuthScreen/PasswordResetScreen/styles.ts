@@ -8,12 +8,8 @@ export const styles = StyleSheet.create({
         width: width,
         height: height,
         backgroundColor: '#000814',
-    },
-    manuelEntryBox: {
-        width: '100%',
-        height: height * 0.75,
         alignItems: 'center',
-        justifyContent: 'space-evenly',
+        justifyContent: 'center'
     },
     titleTextBox: {
         width: width * 0.8,
@@ -33,9 +29,10 @@ export const styles = StyleSheet.create({
     },
     inputContainer: {
         width: width * 0.8,
-        height: height * 0.35,
+        height: height * 0.3,
         alignItems: 'center',
-        justifyContent: 'space-evenly',
+        justifyContent: 'center',
+        rowGap: height * 0.025,
     },
     inputBox: {
         width: '100%',
@@ -74,10 +71,5 @@ export const styles = StyleSheet.create({
         height: '100%',
         borderWidth: 0.5
     },
-    autoEntryBox: {
-        width: '100%',
-        height: height * 0.25,
-    }
-
 
 })

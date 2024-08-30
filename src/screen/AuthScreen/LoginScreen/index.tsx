@@ -1,12 +1,13 @@
 import React from 'react'
-import { Button, Dimensions, Text, TextInput, View } from 'react-native'
+import { Button, Dimensions, Pressable, Text, TextInput, View } from 'react-native'
 import { styles } from './styles'
 import { useNavigation } from '@react-navigation/native'
 import { Formik } from 'formik'
 import CustomBtn from '../../../component/customBtn'
 import { useDispatch } from 'react-redux'
-import { login, register } from '../../../redux/authSlice'
+import { googleSignin, login, register } from '../../../redux/authSlice'
 import LottieView from 'lottie-react-native'
+import { GoogleSigninButton } from '@react-native-google-signin/google-signin'
 
 const { width, height } = Dimensions.get("window")
 
@@ -99,13 +100,18 @@ const LoginScreen = () => {
                                     onPress={handleSubmit}
                                 />
                             </View>
+
+                            <CustomBtn onPress={() => navigation.navigate("passwordReset")} btnWidth={0.6} btnHeight={0.05} text="Forgot your password?" />
+
                         </View>
                     )
                 }
             </Formik>
 
             <View style={styles.autoEntryBox}>
-
+                <GoogleSigninButton
+                    onPress={() => dispatch(googleSignin())}
+                />
             </View>
         </View>
     )

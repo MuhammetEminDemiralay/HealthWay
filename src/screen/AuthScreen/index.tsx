@@ -5,6 +5,7 @@ import InitialScreen from './InitialScreen'
 import LoginScreen from './LoginScreen'
 import RegisterScreen from './RegisterScreen'
 import OnboardingScreen from './OnboardingScreen'
+import PasswordResetScreen from './PasswordResetScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -31,6 +32,11 @@ const AuthScreen = () => {
                 name='onboarding'
                 component={OnboardingScreen}
             />
+             <Stack.Screen
+                name='passwordReset'
+                component={PasswordResetScreen}
+            />
+
         </Stack.Navigator>
     )
 }
