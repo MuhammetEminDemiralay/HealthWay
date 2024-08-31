@@ -44,7 +44,7 @@ const InitialScreen = () => {
             </View>
 
             <View style={[{ height: height * 0.3 }, styles.locationBox]}>
-                <CustomBtn btnWidth={0.8} text="Sign up" backgroundColor="#07b34c" fontWeight="900" onPress={() => navigation.navigate("register")} />
+                <CustomBtn btnWidth={0.8} text="Sign up" backgroundColor="#07b34c" fontWeight="900" onPress={() => navigation.navigate("onboarding")} />
                 <CustomBtn btnWidth={0.8} text="Sign in" backgroundColor="#0295F6" onPress={() => navigation.navigate("login")} />
             </View>
 

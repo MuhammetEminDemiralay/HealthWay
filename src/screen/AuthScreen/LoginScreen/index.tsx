@@ -109,8 +109,10 @@ const LoginScreen = () => {
             </Formik>
 
             <View style={styles.autoEntryBox}>
+                <Text style={styles.tittleText}>Or</Text>
                 <GoogleSigninButton
                     onPress={() => dispatch(googleSignin())}
+                    style={styles.googleSigninBtn}
                 />
             </View>
         </View>

@@ -32,7 +32,7 @@ const AuthScreen = () => {
                 name='onboarding'
                 component={OnboardingScreen}
             />
-             <Stack.Screen
+            <Stack.Screen
                 name='passwordReset'
                 component={PasswordResetScreen}
             />
