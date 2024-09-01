@@ -11,16 +11,12 @@ export const mainStyles = StyleSheet.create({
     contentBox: {
         width: '100%',
         height: height * 0.5,
-        borderWidth: 1,
-        borderColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center'
     },
     nextBtnBox: {
         width: '100%',
         height: height * 0.15,
-        borderWidth: 1,
-        borderColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center'
     }
