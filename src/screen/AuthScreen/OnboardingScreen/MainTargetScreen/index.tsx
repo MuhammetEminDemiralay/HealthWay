@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { Animated, Dimensions, Easing, FlatList, Pressable, Text, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import CustomBtn from '../../../../component/customBtn'
@@ -24,17 +24,17 @@ const MainTargetScreen = () => {
     const setWidthAnimated = (index: number) => {
         Animated.timing(widthAnimatedRefs[index], {
             toValue: width * 0.9,
-            duration: 750,
+            duration: 500,
             useNativeDriver: false,
             easing: Easing.linear
 
         }).start()
     }
 
-    const removetWidthAnimated = (index: number) => {
+    const removeWidthAnimated = (index: number) => {
         Animated.timing(widthAnimatedRefs[index], {
             toValue: 0,
-            duration: 750,
+            duration: 500,
             useNativeDriver: false,
             easing: Easing.linear
         }).start()
@@ -47,7 +47,7 @@ const MainTargetScreen = () => {
         if (newItem == undefined) {
             setWidthAnimated(index)
         } else {
-            removetWidthAnimated(index)
+            removeWidthAnimated(index)
         }
     }
 
@@ -68,19 +68,21 @@ const MainTargetScreen = () => {
                             key={index}
                             style={({ pressed }) => [
                                 {
-                                    backgroundColor: pressed ? '#fff' : 'rgba(255,255,255,0.8)'
+                                    backgroundColor: pressed ? '#fff' : 'rgba(255,255,255,0.8)',
+                                    height: height * 0.065,
+                                    paddingLeft: width * 0.05,
                                 },
-                                styles.btnBox
+                                mainStyles.btnBox
                             ]}
                             onPress={() => set(item, index)}
                         >
                             <Animated.View
-                                style={[{ width: widthAnimatedRefs[index] }, styles.animated]}
+                                style={[{ width: widthAnimatedRefs[index] }, mainStyles.animated]}
                             />
-                            <Text style={[{ color: target.find(targetItem => targetItem == item) == undefined ? "black" : '#fff' }, styles.btnText]}>{item}</Text>
+                            <Text style={[{ color: target.find(targetItem => targetItem == item) == undefined ? "black" : '#fff' }, mainStyles.btnText]}>{item}</Text>
                         </Pressable>
                     )}
-                    style={styles.flatlistContainer}
+                    style={mainStyles.flatlistContainer}
                     showsVerticalScrollIndicator={false}
                 />
 

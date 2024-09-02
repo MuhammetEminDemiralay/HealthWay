@@ -6,47 +6,70 @@ import { useNavigation } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 
 const { width, height } = Dimensions.get("window")
+const FontAwesomeIcon = Animated.createAnimatedComponent(FontAwesome)
 
 const CustomOnboardingHeader = ({ text, targetText, step, source }: any) => {
 
     const navigation: any = useNavigation()
 
-    const animationScale = useRef(new Animated.Value(0.5,)).current
+
+    const animatedUpDownRef1 = useRef(new Animated.Value(0)).current
+    const animatedUpDownRef2 = useRef(new Animated.Value(0)).current
+    const animatedUpDownRef3 = useRef(new Animated.Value(0)).current
 
 
-
-    const grow = () => {
-        Animated.timing(animationScale, {
-            toValue: 1,
-            duration: 2000,
-            useNativeDriver: true,
-        }).start()
+    const setUpDown = () => {
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(animatedUpDownRef1, {
+                    toValue: -height * 0.05,
+                    duration: 250,
+                    useNativeDriver: true
+                }),
+                Animated.timing(animatedUpDownRef2, {
+                    toValue: -height * 0.05,
+                    duration: 500,
+                    useNativeDriver: true
+                }),
+                Animated.timing(animatedUpDownRef3, {
+                    toValue: -height * 0.05,
+                    duration: 750,
+                    useNativeDriver: true
+                }),
+                Animated.timing(animatedUpDownRef1, {
+                    toValue: 0,
+                    duration: 250,
+                    useNativeDriver: true
+                }),
+                Animated.timing(animatedUpDownRef2, {
+                    toValue: 0,
+                    duration: 500,
+                    useNativeDriver: true
+                }),
+                Animated.timing(animatedUpDownRef3, {
+                    toValue: 0,
+                    duration: 750,
+                    useNativeDriver: true
+                }),
+            ])).start();
     }
 
 
-    useEffect(() => {
-        grow()
-        rotateView()
-    }, [animationScale])
-
-
-    const rotate = useRef(new Animated.Value(0)).current
-
-    const rotatetInterpolate = rotate.interpolate({
+    const rotateRef = useRef(new Animated.Value(0)).current
+    const rotateInterpolate = rotateRef.interpolate({
         inputRange: [0, 1, 2],
-        outputRange: ['0deg', '360deg', '180deg']
+        outputRange: ['0deg', '360deg', '0deg']
     })
 
     const rotateView = () => {
         Animated.loop(
             Animated.sequence([
-                Animated.timing(rotate, {
+                Animated.timing(rotateRef, {
                     toValue: 1,
                     duration: 2000,
                     useNativeDriver: true,
-                    easing: Easing.cubic
                 }),
-                Animated.timing(rotate, {
+                Animated.timing(rotateRef, {
                     toValue: 2,
                     duration: 2000,
                     useNativeDriver: true
@@ -55,7 +78,10 @@ const CustomOnboardingHeader = ({ text, targetText, step, source }: any) => {
         ).start()
     }
 
-
+    useEffect(() => {
+        rotateView();
+        setUpDown();
+    }, [rotateRef])
 
     return (
         <View style={styles.container}>
@@ -91,11 +117,13 @@ const CustomOnboardingHeader = ({ text, targetText, step, source }: any) => {
                 {
                     step == 4 &&
                     <View style={{ flexDirection: 'row', columnGap: width * 0.1 }}>
-                        <MaterialCommunityIcons name="gender-male-female" size={scale(50)} color="#2ff57e" />
+                        <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
+                            <MaterialCommunityIcons name="gender-male-female" size={scale(50)} color="#2ff57e" />
+                        </Animated.View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <FontAwesome name="child" size={scale(30)} color="rgba(47, 245, 125, 0.25)" />
-                            <FontAwesome name="child" size={scale(40)} color="rgba(47, 245, 125, 0.5)" />
-                            <FontAwesome name="child" size={scale(50)} color="rgba(47, 245, 125,1)" />
+                            <FontAwesomeIcon style={{ transform: [{ translateY: animatedUpDownRef1 }] }} name="child" size={scale(30)} color="rgba(47, 245, 125, 0.25)" />
+                            <FontAwesomeIcon style={{ transform: [{ translateY: animatedUpDownRef2 }] }} name="child" size={scale(40)} color="rgba(47, 245, 125, 0.5)" />
+                            <FontAwesomeIcon style={{ transform: [{ translateY: animatedUpDownRef3 }] }} name="child" size={scale(50)} color="rgba(47, 245, 125,1)" />
                         </View>
                     </View>
                 }

@@ -4,5 +4,4 @@ const { width, height } = Dimensions.get("window")
 
 export const styles = StyleSheet.create({
 
-
 })

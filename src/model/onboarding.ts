@@ -1,9 +1,13 @@
 export interface Onboarding {
     target: string[],
     reasons: string[],
-    bal: string,
+    bal: {
+        level: string,
+        description: string,
+        examples: string
+    },
     genderAge: {
-        gender: number | null,
+        gender: string,
         age: number | null
     },
     heightWeight: {
@@ -13,3 +17,10 @@ export interface Onboarding {
     weeklyTarget: number | null
 }
 
+
+export interface Bals {
+
+    level: string,
+    description: string,
+    examples: string
+}

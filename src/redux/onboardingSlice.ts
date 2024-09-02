@@ -6,9 +6,13 @@ import { Onboarding } from "../model/onboarding";
 const initialState: Onboarding = {
     target: [],
     reasons: [],
-    bal: "",
+    bal: {
+        level: "",
+        description: "",
+        examples: ""
+    },
     genderAge: {
-        gender: null,
+        gender: "",
         age: null
     },
     heightWeight: {
@@ -29,7 +33,10 @@ const onboardingSlice = createSlice({
                 state.target = state.target.filter(item => item != targetItem)
         },
         setReasons: (state, action) => {
-            state.reasons = action.payload
+            const reasonsItem = state.reasons.find(item => item == action.payload)
+            reasonsItem == undefined ?
+                state.reasons = [...state.reasons, action.payload] :
+                state.reasons = state.reasons.filter(item => item != reasonsItem)
         },
         setBal: (state, action) => {
             state.bal = action.payload;
