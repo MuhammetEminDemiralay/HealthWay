@@ -18,7 +18,7 @@ const ReasonsScreen = () => {
     const { reasons }: Onboarding = useSelector((state: any) => state.onboarding)
     const dispatch: any = useDispatch();
 
-    const widthAnimatedRefs = reasonsData.map(() => useRef(new Animated.Value(1)).current);
+    const widthAnimatedRefs = reasonsData.map(() => useRef(new Animated.Value(0)).current);
 
     const setWidthAnimated = (index: number) => {
         Animated.timing(widthAnimatedRefs[index], {
@@ -63,7 +63,7 @@ const ReasonsScreen = () => {
                             style={({ pressed }) => [
                                 {
                                     backgroundColor: pressed ? '#fff' : 'rgba(255,255,255,0.8)',
-                                    height: height * 0.065,
+                                    height: (height * 0.38) / 6,
                                     paddingLeft: width * 0.05,
 
                                 },
@@ -74,7 +74,7 @@ const ReasonsScreen = () => {
                             <Animated.View
                                 style={[{ width: widthAnimatedRefs[index] }, mainStyles.animated]}
                             />
-                            <Text style={[{ color: reasons.find(reasonsItem => reasonsItem == item) == undefined ? "black" : '#fff' }, mainStyles.btnText]}>{item}</Text>
+                            <Text style={mainStyles.btnText}>{item}</Text>
                         </Pressable>
                     )}
                     style={mainStyles.flatlistContainer}

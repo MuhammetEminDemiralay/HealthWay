@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Animated, Dimensions, FlatList, Text, View } from 'react-native'
 import { styles } from './styles'
 import { useNavigation } from '@react-navigation/native'
@@ -10,6 +10,7 @@ import { scale } from 'react-native-size-matters'
 import { useDispatch, useSelector } from 'react-redux'
 import { setGenderAge } from '../../../../redux/onboardingSlice'
 import { Onboarding } from '../../../../model/onboarding'
+import { number } from 'yup'
 
 
 const GenderScreen = () => {
@@ -19,18 +20,28 @@ const GenderScreen = () => {
     const dispatch: any = useDispatch();
     const { genderAge }: Onboarding = useSelector((state: any) => state.onboarding)
     const [numbers, setNumbers] = useState<number[]>([]);
-    const [viewableData, setViewableData] = useState<any>()
+    const [age, setAge] = useState()
 
     const flatlistRef = useRef<any>()
     const contentOnViewRef = useRef((viewableItems: any) => {
-        setViewableData(viewableItems.changed[2])
+        const thirdItem = viewableItems?.changed[2]?.item
+        if (thirdItem != undefined && viewableItems?.changed?.length > 2) {
+            setAge(viewableItems?.changed[2]?.item)
+            console.log(viewableItems?.changed[2]?.item);
+
+        }
+
     });
 
+    const startValue = -1
     useEffect(() => {
-        setNumbers([...Array(100).fill(0).map((_, index) => index + 1)])
+        setNumbers([...Array(104).fill(0).map((_, index) => startValue + index)])
     }, [])
 
-    console.log(viewableData);
+
+    const scrollEnd = () => {
+        dispatch(setGenderAge({ ...genderAge, age: age }))
+    }
 
 
     return (
@@ -43,12 +54,30 @@ const GenderScreen = () => {
 
                 <View style={styles.genderBox}>
                     <View style={styles.genderWrapper}>
-                        <FontAwesome name="male" size={scale(60)} color={genderAge.gender == "male" ? "#16db65" : "#fff"} />
-                        <CustomBtn onPress={() => dispatch(setGenderAge({ ...genderAge, gender: "male" }))} btnWidth={0.3} btnHeight={0.05} backgroundColor="#16db65" text="male" />
+                        <FontAwesome
+                            name="male" size={scale(60)}
+                            color={genderAge.gender == "male" ? "#16db65" : "#fff"}
+                            onPress={() => dispatch(setGenderAge({ ...genderAge, gender: "male" }))}
+                        />
+                        <CustomBtn
+                            btnWidth={0.3} btnHeight={0.05}
+                            onPress={() => dispatch(setGenderAge({ ...genderAge, gender: "male" }))}
+                            backgroundColor={genderAge.gender == "male" ? "#16db65" : '#fff'} text="male"
+                            color={genderAge.gender == "male" ? "#fff" : 'black'}
+                        />
                     </View>
                     <View style={styles.genderWrapper}>
-                        <FontAwesome name="female" size={scale(60)} color={genderAge.gender == "female" ? "#16db65" : "#fff"} />
-                        <CustomBtn onPress={() => dispatch(setGenderAge({ ...genderAge, gender: "female" }))} btnWidth={0.3} btnHeight={0.05} backgroundColor="#16db65" text="female" />
+                        <FontAwesome
+                            name="female" size={scale(60)}
+                            color={genderAge.gender == "female" ? "#16db65" : "#fff"}
+                            onPress={() => dispatch(setGenderAge({ ...genderAge, gender: "female" }))}
+                        />
+                        <CustomBtn
+                            btnWidth={0.3} btnHeight={0.05}
+                            onPress={() => dispatch(setGenderAge({ ...genderAge, gender: "female" }))}
+                            backgroundColor={genderAge.gender == "female" ? "#16db65" : '#fff'} text="female"
+                            color={genderAge.gender == "female" ? "#fff" : 'black'}
+                        />
                     </View>
                 </View>
 
@@ -57,8 +86,18 @@ const GenderScreen = () => {
                         ref={flatlistRef}
                         data={numbers}
                         renderItem={({ item, index }) => (
-                            <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.15, height: height * 0.1, borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)' }}>
-                                <Text style={{ color: '#fff', fontSize: scale(20) }}>{item}</Text>
+                            <View style={[{
+                                borderWidth: item < 1 || item > 100 ? 0 : 1,
+                            },
+                            styles.sliderBox
+                            ]}
+                            >
+                                {
+                                    item < 1 || item < 101 &&
+                                    <Text style={styles.sliderText}>
+                                        {item}
+                                    </Text>
+                                }
                             </View>
                         )}
                         style={styles.counterBox}
@@ -66,9 +105,9 @@ const GenderScreen = () => {
                         onViewableItemsChanged={contentOnViewRef.current}
                         snapToInterval={width * 0.15}
                         showsHorizontalScrollIndicator={false}
+                        onMomentumScrollEnd={scrollEnd}
                     />
-                    <View style={{ position: 'absolute', width: width * 0.15, height: height * 0.1, borderWidth: 4, borderColor: '#fff' }} />
-                    <Text style={{ color: '#fff', position: 'absolute', bottom: - 40 }}>{viewableData.item}</Text>
+                    <View style={styles.targetAge} />
                 </View>
             </View>
 

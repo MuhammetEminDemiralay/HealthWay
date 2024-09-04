@@ -13,7 +13,7 @@ export const mainStyles = StyleSheet.create({
         width: '100%',
         height: height * 0.5,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     nextBtnBox: {
         width: '100%',

@@ -11,9 +11,10 @@ export const styles = StyleSheet.create({
     },
     manuelEntryBox: {
         width: '100%',
-        height: height * 0.75,
+        height: height * 0.8,
         alignItems: 'center',
-        justifyContent: 'space-evenly',
+        justifyContent: 'center',
+        rowGap: height * 0.05,
     },
     titleTextBox: {
         width: width * 0.8,
@@ -77,10 +78,9 @@ export const styles = StyleSheet.create({
     },
     autoEntryBox: {
         width: '100%',
-        height: height * 0.25,
+        height: height * 0.2,
         alignItems: 'center',
-        justifyContent: 'center',
-        rowGap: height * 0.025
+        rowGap: height * 0.025,
     },
     googleSigninBtn: {
         width: width * 0.8,

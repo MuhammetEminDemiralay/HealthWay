@@ -13,7 +13,7 @@ const initialState: Onboarding = {
     },
     genderAge: {
         gender: "",
-        age: null
+        age: 0
     },
     heightWeight: {
         height: null,
@@ -31,6 +31,10 @@ const onboardingSlice = createSlice({
             targetItem == undefined ?
                 state.target = [...state.target, action.payload] :
                 state.target = state.target.filter(item => item != targetItem)
+        },
+        removeTarget: (state, action) => {
+            const filterData = state.target.filter(item => item != action.payload)
+            state.target = filterData;
         },
         setReasons: (state, action) => {
             const reasonsItem = state.reasons.find(item => item == action.payload)
@@ -54,5 +58,5 @@ const onboardingSlice = createSlice({
 })
 
 
-export const { setTarget, setReasons, setBal, setGenderAge, setHeightWeight, setWeeklyTarget } = onboardingSlice.actions;
+export const { setTarget, removeTarget, setReasons, setBal, setGenderAge, setHeightWeight, setWeeklyTarget } = onboardingSlice.actions;
 export default onboardingSlice.reducer

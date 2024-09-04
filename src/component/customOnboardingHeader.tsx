@@ -139,15 +139,6 @@ const CustomOnboardingHeader = ({ text, targetText, step, source }: any) => {
                     <FontAwesome name="calendar" size={scale(60)} color="#2ff57e" />
                 }
 
-                {/* {
-                    step == 7 &&
-                    <Animated.View style={{ width: 150, height: 150, alignItems: 'center', justifyContent: 'center', backgroundColor: '#2ff57e', transform: [{ rotate: rotatetInterpolate }] }} >
-                        <Text>Muhammet</Text>
-                    </Animated.View>
-
-                    // <AntDesign name="checkcircle" size={scale(60)} color="#2ff57e" />
-                } */}
-
             </View>
 
             <View style={styles.progressBox}>
@@ -182,7 +173,8 @@ const styles = StyleSheet.create({
         width: width * 0.15,
         height: '100%',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderColor: '#fff'
     },
     mainTitleBox: {
         width: width * 0.85,
@@ -193,12 +185,11 @@ const styles = StyleSheet.create({
     },
     mainTitleText: {
         color: '#dbdbdb',
-        fontWeight: '500',
-        fontSize: scale(20)
+        fontSize: scale(18)
     },
     targetText: {
         color: '#fff',
-        fontWeight: '500',
+        fontWeight: '600',
         fontSize: scale(20)
     },
     animationBox: {
@@ -211,11 +202,11 @@ const styles = StyleSheet.create({
         width: width * 0.9,
         height: height * 0.05,
         alignItems: 'flex-end',
-        columnGap: width * ((0.095) / 6),
+        columnGap: width * 0.024,
         flexDirection: 'row',
     },
     progress: {
-        width: width * 0.115,
+        width: width * 0.13,
         height: height * 0.006,
         backgroundColor: '#23e3fc',
     },

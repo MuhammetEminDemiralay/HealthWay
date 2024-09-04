@@ -19,7 +19,8 @@ export const styles = StyleSheet.create({
     },
     bottomText: {
         fontSize: scale(11),
-        color: '#737270'
+        color: '#737270',
+        fontWeight: '500'
     }
 
 

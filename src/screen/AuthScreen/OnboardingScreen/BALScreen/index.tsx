@@ -23,14 +23,13 @@ const BALScreen = () => {
         { level: "Very Active", description: "Spends most of the day engaged in intense physical activities", examples: "Construction workers, athletes, farmers." }
     ];
     const { bal }: Onboarding = useSelector((state: any) => state.onboarding)
-    const widthAnimatedRefs = balsData.map(() => useRef(new Animated.Value(1)).current)
+    const widthAnimatedRefs = balsData.map(() => useRef(new Animated.Value(0)).current)
 
     const setWidthAnimated = (index: number) => {
         Animated.timing(widthAnimatedRefs[index], {
             toValue: width * 0.9,
             duration: 500,
             useNativeDriver: false,
-            easing: Easing.linear
         }).start()
     }
 
@@ -39,7 +38,6 @@ const BALScreen = () => {
             toValue: 0,
             duration: 500,
             useNativeDriver: false,
-            easing: Easing.linear
         }).start()
     }
 
@@ -89,7 +87,7 @@ const BALScreen = () => {
                             style={({ pressed }) => [
                                 {
                                     backgroundColor: pressed ? '#fff' : 'rgba(255,255,255,0.8)',
-                                    height: (height * 0.41) / 4,
+                                    height: (height * 0.40) / 4,
                                     rowGap: 5
                                 },
                                 mainStyles.btnBox

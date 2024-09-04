@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Animated, Dimensions, Easing, FlatList, Pressable, Text, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import CustomBtn from '../../../../component/customBtn'
@@ -7,7 +7,7 @@ import CustomOnboardingHeader from '../../../../component/customOnboardingHeader
 import { styles } from './styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { Onboarding } from '../../../../model/onboarding'
-import { setTarget } from '../../../../redux/onboardingSlice'
+import { removeTarget, setTarget } from '../../../../redux/onboardingSlice'
 
 
 
@@ -19,7 +19,7 @@ const MainTargetScreen = () => {
     const dispatch: any = useDispatch();
 
     const { target }: Onboarding = useSelector((state: any) => state.onboarding)
-    const widthAnimatedRefs = targetData.map(() => useRef(new Animated.Value(1)).current);
+    const widthAnimatedRefs = targetData.map(() => useRef(new Animated.Value(0)).current);
 
     const setWidthAnimated = (index: number) => {
         Animated.timing(widthAnimatedRefs[index], {
@@ -43,6 +43,31 @@ const MainTargetScreen = () => {
 
     const set = (item: string, index: number) => {
         const newItem = target.find(targetItem => targetItem == item)
+        if (item == targetData[0] && (
+            target.find(targetItem => targetItem == targetData[1]) != undefined ||
+            target.find(targetItem => targetItem == targetData[2]) != undefined)) {
+            dispatch(removeTarget(targetData[1]))
+            dispatch(removeTarget(targetData[2]))
+            removeWidthAnimated(1)
+            removeWidthAnimated(2)
+        }
+        if (item == targetData[1] && (
+            target.find(targetItem => targetItem == targetData[0]) != undefined ||
+            target.find(targetItem => targetItem == targetData[2]) != undefined)) {
+            dispatch(removeTarget(targetData[0]))
+            dispatch(removeTarget(targetData[2]))
+            removeWidthAnimated(0)
+            removeWidthAnimated(2)
+        }
+        if (item == targetData[2] && (
+            target.find(targetItem => targetItem == targetData[0]) != undefined ||
+            target.find(targetItem => targetItem == targetData[1]) != undefined)) {
+            dispatch(removeTarget(targetData[0]))
+            dispatch(removeTarget(targetData[1]))
+            removeWidthAnimated(0)
+            removeWidthAnimated(1)
+        }
+
         dispatch(setTarget(item))
         if (newItem == undefined) {
             setWidthAnimated(index)
@@ -50,7 +75,6 @@ const MainTargetScreen = () => {
             removeWidthAnimated(index)
         }
     }
-
 
 
 
@@ -68,8 +92,8 @@ const MainTargetScreen = () => {
                             key={index}
                             style={({ pressed }) => [
                                 {
-                                    backgroundColor: pressed ? '#fff' : 'rgba(255,255,255,0.8)',
-                                    height: height * 0.065,
+                                    backgroundColor: pressed ? '#fff' : 'rgba(255,255,255,0.75)',
+                                    height: (height * 0.38) / 6,
                                     paddingLeft: width * 0.05,
                                 },
                                 mainStyles.btnBox
@@ -79,7 +103,7 @@ const MainTargetScreen = () => {
                             <Animated.View
                                 style={[{ width: widthAnimatedRefs[index] }, mainStyles.animated]}
                             />
-                            <Text style={[{ color: target.find(targetItem => targetItem == item) == undefined ? "black" : '#fff' }, mainStyles.btnText]}>{item}</Text>
+                            <Text style={mainStyles.btnText}>{item}</Text>
                         </Pressable>
                     )}
                     style={mainStyles.flatlistContainer}
