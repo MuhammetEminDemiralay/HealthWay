@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Animated, Dimensions, Easing, FlatList, Pressable, Text, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { mainStyles } from '../mainStyles'
@@ -8,6 +8,7 @@ import { styles } from './styles'
 import { Onboarding } from '../../../../model/onboarding'
 import { useDispatch, useSelector } from 'react-redux'
 import { setReasons } from '../../../../redux/onboardingSlice'
+import { Entypo } from '@expo/vector-icons';
 
 
 const ReasonsScreen = () => {
@@ -17,6 +18,7 @@ const ReasonsScreen = () => {
     const reasonsData = ["Shortage of time", "Difficulty complying with the regime", "food choices", "Holidays, travel and social events", "food cravings", "lack of progress"]
     const { reasons }: Onboarding = useSelector((state: any) => state.onboarding)
     const dispatch: any = useDispatch();
+    const [warningState, setWarningState] = useState(false)
 
     const widthAnimatedRefs = reasonsData.map(() => useRef(new Animated.Value(0)).current);
 
@@ -45,6 +47,14 @@ const ReasonsScreen = () => {
             setWidthAnimated(index)
         } else {
             removeWidthAnimated(index)
+        }
+    }
+
+    const navigate = () => {
+        if (reasons.length > 0) {
+            navigation.navigate("bal")
+        } else {
+            setWarningState(true)
         }
     }
 
@@ -80,10 +90,18 @@ const ReasonsScreen = () => {
                     style={mainStyles.flatlistContainer}
                     showsVerticalScrollIndicator={false}
                 />
+
+                {
+                    reasons.length < 1 && warningState &&
+                    <View style={mainStyles.warningTextBox}>
+                        <Entypo name="warning" size={20} color="orange" />
+                        <Text style={mainStyles.warningText}>Tick ​​at least one</Text>
+                    </View>
+                }
             </View>
 
             <View style={mainStyles.nextBtnBox}>
-                <CustomBtn btnWidth={0.8} text="Next" backgroundColor='#16db65' onPress={() => navigation.navigate("bal")} />
+                <CustomBtn btnWidth={0.8} text="Next" backgroundColor='#16db65' onPress={navigate} />
             </View>
         </View>
     )

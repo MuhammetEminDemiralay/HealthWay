@@ -8,7 +8,7 @@ import { Bals, Onboarding } from '../../../../model/onboarding'
 import { useDispatch, useSelector } from 'react-redux'
 import { setBal } from '../../../../redux/onboardingSlice'
 import { styles } from './styles'
-import { scale } from 'react-native-size-matters'
+import { Entypo } from '@expo/vector-icons';
 
 
 const BALScreen = () => {
@@ -23,6 +23,8 @@ const BALScreen = () => {
         { level: "Very Active", description: "Spends most of the day engaged in intense physical activities", examples: "Construction workers, athletes, farmers." }
     ];
     const { bal }: Onboarding = useSelector((state: any) => state.onboarding)
+    const [warningState, setWarningState] = useState(false)
+
     const widthAnimatedRefs = balsData.map(() => useRef(new Animated.Value(0)).current)
 
     const setWidthAnimated = (index: number) => {
@@ -51,7 +53,11 @@ const BALScreen = () => {
             setPreviouslyIndex(index)
         }
         setActiveIndex(index)
-        dispatch(setBal(item))
+        if (state) {
+            dispatch(setBal(item))
+        } else {
+            dispatch(setBal({ level: "", description: "", examples: "" }))
+        }
     };
 
     useEffect(() => {
@@ -70,6 +76,15 @@ const BALScreen = () => {
         setPreviouslyIndex(activeIndex)
     }, [bal])
 
+    const navigate = () => {
+        if (bal.level != "") {
+            navigation.navigate("gender")
+        } else {
+            setWarningState(true)
+        }
+    }
+
+    console.log(bal);
 
 
     return (
@@ -109,10 +124,17 @@ const BALScreen = () => {
                     showsVerticalScrollIndicator={false}
                 />
 
+                {
+                    bal.level == "" && warningState &&
+                    <View style={mainStyles.warningTextBox}>
+                        <Entypo name="warning" size={20} color="orange" />
+                        <Text style={mainStyles.warningText}>Tick ​​at least one</Text>
+                    </View>
+                }
             </View>
 
             <View style={mainStyles.nextBtnBox}>
-                <CustomBtn btnWidth={0.8} text="Next" backgroundColor='#16db65' onPress={() => navigation.navigate("gender")} />
+                <CustomBtn btnWidth={0.8} text="Next" backgroundColor='#16db65' onPress={navigate} />
             </View>
         </View>
     )

@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     container: {
         width: width,
         height: height,
-        backgroundColor: '#000814',
+        backgroundColor: 'black',
     },
     manuelEntryBox: {
         width: '100%',
@@ -44,7 +44,8 @@ export const styles = StyleSheet.create({
         height: height * 0.075,
         flexDirection: 'row',
         borderBottomWidth: 2,
-        borderBottomColor: '#fff'
+        borderBottomColor: '#fff',
+
     },
     animationBox: {
         width: width * 0.15,
@@ -73,6 +74,8 @@ export const styles = StyleSheet.create({
     iconBox: {
         width: width * 0.1,
         height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     autoEntryBox: {
         width: '100%',
@@ -90,5 +93,16 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    errorBox: {
+        width: width * 0.8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        columnGap: width * 0.01,
+        marginTop: height * 0.01
+    },
+    errorText: {
+        color: "#f24b58",
 
+    }
 })

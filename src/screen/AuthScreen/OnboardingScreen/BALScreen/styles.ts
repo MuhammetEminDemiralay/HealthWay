@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     container: {
         width: width,
         height: height,
-        backgroundColor: '#000814',
+        backgroundColor: 'black',
     },
     textBox: {
         width: width * 0.9,

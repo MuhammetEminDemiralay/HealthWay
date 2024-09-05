@@ -7,7 +7,7 @@ export const mainStyles = StyleSheet.create({
     container: {
         width: width,
         height: height,
-        backgroundColor: '#000814',
+        backgroundColor: 'black',
     },
     contentBox: {
         width: '100%',
@@ -43,6 +43,18 @@ export const mainStyles = StyleSheet.create({
     btnText: {
         fontSize: scale(16),
         fontWeight: '600'
+    },
+    warningTextBox: {
+        width: width * 0.9,
+        height: height * 0.03,
+        position: 'absolute',
+        bottom: 0,
+        alignItems: 'center',
+        flexDirection: 'row',
+        columnGap: width * 0.025
+    },
+    warningText: {
+        color: '#fff',
     }
 
 })

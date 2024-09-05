@@ -1,13 +1,13 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Animated, Dimensions, Easing, FlatList, Pressable, Text, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import CustomBtn from '../../../../component/customBtn'
 import { mainStyles } from '../mainStyles'
 import CustomOnboardingHeader from '../../../../component/customOnboardingHeader'
-import { styles } from './styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { Onboarding } from '../../../../model/onboarding'
 import { removeTarget, setTarget } from '../../../../redux/onboardingSlice'
+import { Entypo } from '@expo/vector-icons';
 
 
 
@@ -17,6 +17,7 @@ const MainTargetScreen = () => {
     const navigation: any = useNavigation()
     const targetData = ["Lose weight", "Stay the same weight", "Gain weight", "Gain muscle", "Stress management", "Increase step count"]
     const dispatch: any = useDispatch();
+    const [warningState, setWarningState] = useState(false)
 
     const { target }: Onboarding = useSelector((state: any) => state.onboarding)
     const widthAnimatedRefs = targetData.map(() => useRef(new Animated.Value(0)).current);
@@ -76,7 +77,13 @@ const MainTargetScreen = () => {
         }
     }
 
-
+    const navigate = () => {
+        if (target.length > 0) {
+            navigation.navigate("reasons")
+        } else {
+            setWarningState(true)
+        }
+    }
 
     return (
         <View style={mainStyles.container}>
@@ -110,10 +117,18 @@ const MainTargetScreen = () => {
                     showsVerticalScrollIndicator={false}
                 />
 
+                {
+                    target.length < 1 && warningState &&
+                    <View style={mainStyles.warningTextBox}>
+                        <Entypo name="warning" size={20} color="orange" />
+                        <Text style={mainStyles.warningText}>Tick ​​at least one</Text>
+                    </View>
+                }
+
             </View>
 
             <View style={mainStyles.nextBtnBox}>
-                <CustomBtn btnWidth={0.8} text="Next" backgroundColor='#16db65' onPress={() => navigation.navigate("reasons")} />
+                <CustomBtn btnWidth={0.8} text="Next" backgroundColor='#16db65' onPress={navigate} />
             </View>
 
         </View >

@@ -10,7 +10,7 @@ import { scale } from 'react-native-size-matters'
 import { useDispatch, useSelector } from 'react-redux'
 import { setGenderAge } from '../../../../redux/onboardingSlice'
 import { Onboarding } from '../../../../model/onboarding'
-import { number } from 'yup'
+import { Entypo } from '@expo/vector-icons';
 
 
 const GenderScreen = () => {
@@ -21,17 +21,17 @@ const GenderScreen = () => {
     const { genderAge }: Onboarding = useSelector((state: any) => state.onboarding)
     const [numbers, setNumbers] = useState<number[]>([]);
     const [age, setAge] = useState()
+    const [warningState, setWarningState] = useState(false)
+
 
     const flatlistRef = useRef<any>()
     const contentOnViewRef = useRef((viewableItems: any) => {
-        const thirdItem = viewableItems?.changed[2]?.item
-        if (thirdItem != undefined && viewableItems?.changed?.length > 2) {
-            setAge(viewableItems?.changed[2]?.item)
+        if (viewableItems?.changed?.length > 2) {
             console.log(viewableItems?.changed[2]?.item);
-
+            setAge(viewableItems?.changed[2]?.item)
         }
-
     });
+
 
     const startValue = -1
     useEffect(() => {
@@ -41,6 +41,14 @@ const GenderScreen = () => {
 
     const scrollEnd = () => {
         dispatch(setGenderAge({ ...genderAge, age: age }))
+    }
+
+    const navigate = () => {
+        if (genderAge.gender != "" && genderAge.age != null) {
+            navigation.navigate("weight")
+        } else {
+            setWarningState(true)
+        }
     }
 
 
@@ -109,10 +117,24 @@ const GenderScreen = () => {
                     />
                     <View style={styles.targetAge} />
                 </View>
+                {
+                    (genderAge.gender == "" || genderAge.age == null) && warningState &&
+                    <View style={mainStyles.warningTextBox}>
+                        <Entypo name="warning" size={20} color="orange" />
+                        {
+                            genderAge.gender == "" &&
+                            <Text style={mainStyles.warningText}>Mark gender</Text>
+                        }
+                        {
+                            genderAge.age == null &&
+                            <Text style={mainStyles.warningText}>Scroll for age</Text>
+                        }
+                    </View>
+                }
             </View>
 
             <View style={mainStyles.nextBtnBox}>
-                <CustomBtn btnWidth={0.8} text="Next" backgroundColor='#16db65' onPress={() => navigation.navigate("weight")} />
+                <CustomBtn btnWidth={0.8} text="Next" backgroundColor='#16db65' onPress={navigate} />
             </View>
         </View>
     )
