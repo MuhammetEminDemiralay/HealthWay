@@ -12,6 +12,9 @@ import { FontAwesome, Ionicons, Entypo, MaterialIcons } from '@expo/vector-icons
 import { scale } from 'react-native-size-matters'
 import { Onboarding } from '../../../model/onboarding'
 import * as Yup from "yup"
+import { AppDispatch, RootState } from '../../../redux/store'
+import { setUser } from '../../../redux/userSlice'
+import { Auth } from '../../../model/auth'
 
 
 const RegisterScreen = () => {
@@ -23,6 +26,14 @@ const RegisterScreen = () => {
     const { bal, genderAge, heightWeight, reasons, target, weeklyTarget }: Onboarding = useSelector((state: any) => state.onboarding);
 
 
+    const setGoogleSignin = async () => {
+        const result = await dispatch(googleSignin())
+        if (googleSignin.fulfilled.match(result)) {
+            dispatch(setUser({ bal, genderAge, heightWeight, reasons, target, weeklyTarget }))
+        } else {
+            Alert.alert("Error", "Try it again")
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -34,13 +45,18 @@ const RegisterScreen = () => {
                     email: "",
                     password: ""
                 }}
-                onSubmit={(value) => {
-                    dispatch(register(value))
+                onSubmit={async (value) => {
+                    const result = await dispatch(register(value))
+                    if (register.fulfilled.match(result)) {
+                        dispatch(setUser({ bal, genderAge, heightWeight, reasons, target, weeklyTarget }))
+                    } else {
+                        Alert.alert("Error", "Try it again")
+                    }
                 }}
                 validationSchema={validationSchema}
             >
                 {
-                    ({ handleSubmit, handleChange, values, errors }) => (
+                    ({ handleSubmit, handleChange, values, errors, touched, dirty }) => (
                         <View style={styles.manuelEntryBox}>
 
                             <View style={styles.titleTextBox}>
@@ -79,7 +95,7 @@ const RegisterScreen = () => {
                                         </View>
                                     </View>
                                     {
-                                        errors.email &&
+                                        errors.email && touched.email && dirty &&
                                         <Error error={errors.email} />
                                     }
                                 </View>
@@ -119,7 +135,7 @@ const RegisterScreen = () => {
                                         </View>
                                     </View>
                                     {
-                                        errors.password &&
+                                        errors.password && touched.password && dirty &&
                                         <Error error={errors.password} />
                                     }
                                 </View>
@@ -140,7 +156,7 @@ const RegisterScreen = () => {
             <View style={styles.autoEntryBox}>
                 <Text style={styles.tittleText}>Or</Text>
                 <GoogleSigninButton
-                    onPress={() => dispatch(googleSignin())}
+                    onPress={setGoogleSignin}
                     style={styles.googleSigninBtn}
                 />
             </View>

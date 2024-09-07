@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, sendPasswordResetEmail, signInWithCredential, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, sendPasswordResetEmail, signInWithCredential, signInWithEmailAndPassword, signOut, UserInfo } from 'firebase/auth'
 import app from "../../firebaseConfig";
 import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { Auth } from "../model/auth";
 
 
 GoogleSignin.configure({
@@ -20,8 +20,8 @@ export const login = createAsyncThunk("auth/login", async ({ email, password }: 
         const userCredentials = await signInWithEmailAndPassword(auth, email, password)
         const user = userCredentials.user
         const token = await user.getIdToken();
-
-        await AsyncStorage.setItem("_token", token)
+        await AsyncStorage.setItem("_token", token);
+        await AsyncStorage.setItem("_uid", user.uid);
 
         return {
             user: user,
@@ -39,7 +39,8 @@ export const register = createAsyncThunk("auth/register", async ({ email, passwo
         const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredentials.user
         const token = await user.getIdToken();
-        await AsyncStorage.setItem("_token", token)
+        await AsyncStorage.setItem("_token", token);
+        await AsyncStorage.setItem("_uid", user.uid);
 
         return {
             user: user,
@@ -67,13 +68,14 @@ export const googleSignin = createAsyncThunk("auth/googleSignin", async () => {
         await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
         const { idToken } = await GoogleSignin.signIn();
 
-
         const googleCredentials = GoogleAuthProvider.credential(idToken)           // Bizim eklediklerimiz //idToken sayesinde id ile giriş yap sağlıyıruz
 
         const data = await signInWithCredential(auth, googleCredentials);
 
         if (googleCredentials.idToken) {
             await AsyncStorage.setItem("_token", googleCredentials.idToken);
+            await AsyncStorage.setItem("_uid", data.user.uid);
+
             return data;
         } else {
             const data = {
@@ -110,8 +112,13 @@ export const resetPassword = createAsyncThunk("password/reset", async (email: st
 export const autoLogin = createAsyncThunk("auth/autoLogin", async () => {
     try {
         const token = await AsyncStorage.getItem("_token")
+        const uid = await AsyncStorage.getItem("_uid")
+
         if (token) {
-            return token
+            return {
+                token,
+                uid
+            }
         } else {
             throw Error("User not found!")
         }
@@ -123,35 +130,30 @@ export const autoLogin = createAsyncThunk("auth/autoLogin", async () => {
 export const logout = createAsyncThunk("auth/logout", async () => {
     try {
         const auth = getAuth(app);
-        await signOut(auth);
         await AsyncStorage.removeItem("_token")
+        await AsyncStorage.removeItem("_uid")
+
+        await signOut(auth);
     } catch (error) {
         throw error
     }
 })
 
 
-interface InitalState {
-    isLoading: boolean,
-    isAuth: boolean,
-    token: string,
-    user: any,
-    error: string | undefined
-}
 
-const initialState: InitalState = {
+const initialState: Auth = {
     isLoading: false,
     isAuth: false,
     token: "",
-    user: {},
-    error: ""
+    error: "",
+    user: {} as UserInfo,
+    uid: null
 }
 
 const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-
     },
     extraReducers: (builder) => {
         // Login
@@ -182,6 +184,10 @@ const authSlice = createSlice({
                 state.isLoading = false;
                 state.token = action.payload.token;
                 state.user = action.payload.user;
+                console.log("Çalıştı");
+                console.log("Ass", action.payload.user);
+
+
             })
             .addCase(register.rejected, (state, action) => {
                 state.isLoading = false;
@@ -212,7 +218,8 @@ const authSlice = createSlice({
             .addCase(autoLogin.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isAuth = true;
-                state.token = action.payload;
+                state.token = action.payload.token;
+                state.uid = action.payload.uid;
             })
             .addCase(autoLogin.rejected, (state, action) => {
                 state.error = action.error.message;
@@ -220,8 +227,6 @@ const authSlice = createSlice({
             })
 
             // Logout
-
-
             .addCase(logout.pending, (state) => {
                 state.isLoading = true;
                 state.isAuth = false;
