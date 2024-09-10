@@ -24,7 +24,7 @@ export const mainStyles = StyleSheet.create({
 
     flatlistContainer: {
         width: width * 0.9,
-        minHeight: height * 0.44,
+        minHeight: height * 0.45,
         maxHeight: height * 0.44,
     },
     btnBox: {

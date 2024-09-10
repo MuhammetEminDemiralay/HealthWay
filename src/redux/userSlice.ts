@@ -3,6 +3,7 @@ import { addDoc, collection, doc, getDoc, setDoc, } from "firebase/firestore"
 import app, { db } from "../../firebaseConfig";
 import { Onboarding } from "../model/onboarding";
 import { RootState } from "./store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export const setUser = createAsyncThunk("user/set", async (user: Onboarding, { getState }) => {
@@ -11,25 +12,40 @@ export const setUser = createAsyncThunk("user/set", async (user: Onboarding, { g
         const state = getState() as RootState;
         const uid = state.auth.uid
         const ref = doc(db, "user", `${uid}`)
+
         await setDoc(ref, user)
+        await AsyncStorage.setItem("_user", JSON.stringify(user))
 
     } catch (error) {
         throw error
     }
 })
 
-export const getUser = createAsyncThunk("user/get", async () => {
+export const getUser = createAsyncThunk("user/get", async (_, { getState }) => {
     try {
-        const ref = doc(db, "user", "O5idt2kvkNRL38Y0HV1jtGdnbWf2")
-        const { data } = await getDoc(ref)
-        console.log(data);
+        const state = getState() as RootState;
+
+        const ref = doc(db, "user", `${state.auth.uid}`)
+        const data = (await getDoc(ref)).data();
+
+    } catch (error) {
+        throw error
+    }
+})
+
+export const setDietCalculate = createAsyncThunk("set/dietCaklculate", async (_, { getState }) => {
+    try {
+
+        const { onboarding } = getState() as RootState
+
+        console.log(onboarding.reasons);
+
 
 
     } catch (error) {
 
     }
 })
-
 
 
 

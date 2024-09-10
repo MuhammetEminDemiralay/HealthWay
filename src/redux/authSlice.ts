@@ -75,13 +75,9 @@ export const googleSignin = createAsyncThunk("auth/googleSignin", async () => {
         if (googleCredentials.idToken) {
             await AsyncStorage.setItem("_token", googleCredentials.idToken);
             await AsyncStorage.setItem("_uid", data.user.uid);
-
-            return data;
+            return data.user.uid;
         } else {
-            const data = {
-                uid: null,
-            }
-            return data;
+            return null;
         }
 
     } catch (error: any) {
@@ -184,10 +180,7 @@ const authSlice = createSlice({
                 state.isLoading = false;
                 state.token = action.payload.token;
                 state.user = action.payload.user;
-                console.log("Çalıştı");
-                console.log("Ass", action.payload.user);
-
-
+                state.uid = action.payload.user.uid;
             })
             .addCase(register.rejected, (state, action) => {
                 state.isLoading = false;
@@ -203,6 +196,7 @@ const authSlice = createSlice({
             .addCase(googleSignin.fulfilled, (state, action) => {
                 state.isAuth = true;
                 state.isLoading = false;
+                state.uid = action.payload
             })
             .addCase(googleSignin.rejected, (state, action) => {
                 state.isLoading = false;
@@ -234,6 +228,9 @@ const authSlice = createSlice({
             .addCase(logout.fulfilled, (state) => {
                 state.isLoading = false;
                 state.isAuth = false;
+                state.token = "";
+                state.uid = null;
+                state.user = null;
             })
             .addCase(logout.rejected, (state, action) => {
                 state.error = action.error.message;

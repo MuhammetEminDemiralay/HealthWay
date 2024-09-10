@@ -1,5 +1,23 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Onboarding } from "../model/onboarding";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
+
+
+export const getUserInfoAsyncstorage = createAsyncThunk("get/userInfoAsyncstorage", async () => {
+    try {
+        const userInfo = await AsyncStorage.getItem("_user")
+        if (userInfo != null) {
+            return JSON.parse(userInfo);
+        } else {
+            return null;
+        }
+
+    } catch (error) {
+        throw error
+    }
+})
 
 
 
@@ -56,6 +74,35 @@ const onboardingSlice = createSlice({
         setWeeklyTarget: (state, action) => {
             state.weeklyTarget = action.payload;
         }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getUserInfoAsyncstorage.pending, (state, action) => {
+
+            })
+            .addCase(getUserInfoAsyncstorage.fulfilled, (state, action) => {
+                if (action.payload != null) {
+                    state.bal = {
+                        description: action.payload.bal.description,
+                        examples: action.payload.bal.examples,
+                        level: action.payload.bal.level
+                    }
+                    state.genderAge = {
+                        age: action.payload.genderAge.age,
+                        gender: action.payload.genderAge.gender
+                    }
+                    state.heightWeight = {
+                        height: action.payload.heightWeight.height,
+                        weight: action.payload.heightWeight.weight
+                    }
+                    state.reasons = action.payload.reasons
+                    state.target = action.payload.target
+                    state.weeklyTarget = action.payload.weeklyTarget
+                }
+            })
+            .addCase(getUserInfoAsyncstorage.rejected, (state, action) => {
+
+            })
     }
 })
 

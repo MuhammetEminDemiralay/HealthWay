@@ -19,6 +19,7 @@ const BALScreen = () => {
     const balsData = [
         { level: "Not very active", description: "Spends most of the day sitting", examples: "TV watchers, desk workers, car commuters." },
         { level: "Lightly Active", description: "Engages in light physical activities throughout the day", examples: "Teachers, store clerks, light walkers." },
+        { level: "Moderately Active", description: "Moderate activity several days a week", examples: "Regular exercisers, active students" },
         { level: "Active", description: "Regularly engages in physical activities throughout the day", examples: "Waiters, retail workers, regular exercisers." },
         { level: "Very Active", description: "Spends most of the day engaged in intense physical activities", examples: "Construction workers, athletes, farmers." }
     ];
@@ -102,8 +103,7 @@ const BALScreen = () => {
                             style={({ pressed }) => [
                                 {
                                     backgroundColor: pressed ? '#fff' : 'rgba(255,255,255,0.8)',
-                                    height: (height * 0.40) / 4,
-                                    rowGap: 5
+                                    height: (height * 0.40) / 5,
                                 },
                                 mainStyles.btnBox
                             ]}

@@ -1,7 +1,7 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { HomeScreen } from '../screen'
-import { Entypo } from '@expo/vector-icons';
+import { HomeScreen, ProfileScreen } from '../screen'
+import { Entypo, FontAwesome } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
 
 
@@ -14,8 +14,8 @@ const UserStack = () => {
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false,
-                tabBarStyle: { height: height * 0.175 },
-                tabBarItemStyle: { maxWidth: 100, height: height * 0.175, borderWidth: 1 }
+                tabBarStyle: { height: height * 0.1, backgroundColor: '#f5cb5c' },
+                tabBarItemStyle: { height: height * 0.1 }
             }}
         >
             <Tab.Screen
@@ -24,6 +24,15 @@ const UserStack = () => {
                 options={{
                     tabBarIcon: () => (
                         <Entypo name="home" size={28} color="black" />
+                    )
+                }}
+            />
+            <Tab.Screen
+                name='profile'
+                component={ProfileScreen}
+                options={{
+                    tabBarIcon: () => (
+                        <FontAwesome name="user" size={24} color="black" />
                     )
                 }}
             />

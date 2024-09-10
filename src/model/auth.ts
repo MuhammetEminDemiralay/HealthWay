@@ -6,5 +6,5 @@ export interface Auth {
     token: string,
     user: UserInfo | null,
     error: string | undefined,
-    uid: string | null
+    uid: string | null | undefined
 }

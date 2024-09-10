@@ -13,7 +13,7 @@ import { scale } from 'react-native-size-matters'
 import { Onboarding } from '../../../model/onboarding'
 import * as Yup from "yup"
 import { AppDispatch, RootState } from '../../../redux/store'
-import { setUser } from '../../../redux/userSlice'
+import { setDietCalculate, setUser } from '../../../redux/userSlice'
 import { Auth } from '../../../model/auth'
 
 
