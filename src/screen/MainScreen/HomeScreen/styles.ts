@@ -15,8 +15,23 @@ export const styles = StyleSheet.create({
         height: height * 0.125,
         borderRadius: 10,
         marginTop: height * 0.015,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    todayBtn: {
+        width: width * 0.15,
+        height: height * 0.05,
+        borderWidth: 1,
+        borderColor: '#c5c3c6',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderRadius: 10,
+        marginRight: width * 0.05
+    },
+    todayBtnText: {
+        color: "#c5c3c6",
+        fontWeight: '500',
+        fontSize: scale(14)
     },
     content: {
         width: width * 0.95,
@@ -41,8 +56,6 @@ export const styles = StyleSheet.create({
     middleTopContent: {
         width: width * 0.55,
         height: height * 0.125,
-        borderWidth: 1,
-        borderColor: '#fff'
     },
     calorieMeterBox: {
         width: width * 0.55,
@@ -75,13 +88,13 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#fff',
         borderRadius: height * 0.1,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     middleBottomContent: {
         width: width * 0.55,
         height: height * 0.125,
-        borderWidth: 1,
-        borderColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
         rowGap: height * 0.01
@@ -108,10 +121,8 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#c5c3c6',
     },
-
-
-    calendar: {
-        width: width * 0.6,
+    headerCalendar: {
+        width: width * 0.55,
         height: height * 0.125,
     },
     dateName: {
@@ -134,6 +145,16 @@ export const styles = StyleSheet.create({
     },
     highlightDateName: {
         fontWeight: '700',
+    },
+
+    bottomCalendar: {
+        flex: 1,
+        width: width * 0.95,
+        height: height * 0.175,
+        borderWidth: 1,
+        borderColor: 'red',
+        padding: 0,
+        margin: 0
     }
 
 

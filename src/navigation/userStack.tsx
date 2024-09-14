@@ -1,6 +1,6 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { HomeScreen, ProfileScreen } from '../screen'
+import { MainScreen, ProfileScreen } from '../screen'
 import { Entypo, FontAwesome } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
 
@@ -19,8 +19,8 @@ const UserStack = () => {
             }}
         >
             <Tab.Screen
-                name='home'
-                component={HomeScreen}
+                name='main'
+                component={MainScreen}
                 options={{
                     tabBarIcon: () => (
                         <Entypo name="home" size={28} color="black" />

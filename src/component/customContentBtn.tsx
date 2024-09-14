@@ -5,7 +5,7 @@ import { SimpleLineIcons, MaterialIcons, Ionicons, MaterialCommunityIcons } from
 
 const { width, height } = Dimensions.get("window")
 
-const CustomContentBtn = ({ text, value = 0, icon }: any) => {
+const CustomContentBtn = ({ text, value = 0, icon, setVisible }: any) => {
 
 
     return (
@@ -14,7 +14,9 @@ const CustomContentBtn = ({ text, value = 0, icon }: any) => {
                 backgroundColor: pressed ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0)'
             },
             styles.btnContent
-        ]}>
+        ]}
+            onPress={setVisible}
+        >
             <Text style={styles.btnTitleText}>{text}</Text>
             <View style={styles.wrapper}>
                 <Text style={styles.btnContenText}>{value}</Text>
