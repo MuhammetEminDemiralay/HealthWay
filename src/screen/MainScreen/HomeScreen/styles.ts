@@ -7,8 +7,8 @@ export const styles = StyleSheet.create({
     container: {
         width: width,
         height: height * 0.9,
-        backgroundColor: 'black',
         alignItems: 'center',
+        backgroundColor: '#212529'
     },
     headContainer: {
         width: width * 0.95,
@@ -16,13 +16,11 @@ export const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: height * 0.015,
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     todayBtn: {
         width: width * 0.15,
         height: height * 0.05,
-        borderWidth: 1,
-        borderColor: '#c5c3c6',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10,
@@ -36,14 +34,13 @@ export const styles = StyleSheet.create({
     content: {
         width: width * 0.95,
         height: height * 0.5,
-        backgroundColor: '#333533',
-        borderWidth: 1,
-        borderColor: '#c5c3c6',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 10,
         marginVertical: height * 0.015,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        backgroundColor: '#495057',
+        elevation: 2,
+        borderRadius: 10
     },
     leftContent: {
         width: width * 0.2,
@@ -78,19 +75,16 @@ export const styles = StyleSheet.create({
     emtyBox: {
         width: height * 0.2,
         height: height * 0.2,
-        backgroundColor: 'black',
         position: 'absolute',
         borderRadius: height * 0.1,
     },
     calorieScreen: {
         width: height * 0.2,
         height: height * 0.2,
-        borderWidth: 1,
-        borderColor: '#fff',
         borderRadius: height * 0.1,
-        backgroundColor: '#fff',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: '#fff'
     },
     middleBottomContent: {
         width: width * 0.55,
@@ -113,49 +107,14 @@ export const styles = StyleSheet.create({
         height: height * 0.5,
     },
 
+
     activityContainer: {
         width: width * 0.95,
-        height: height * 0.175,
+        height: height * 0.16,
+        backgroundColor: '#495057',
+        elevation: 2,
         borderRadius: 10,
-        backgroundColor: '#333533',
-        borderWidth: 1,
-        borderColor: '#c5c3c6',
     },
-    headerCalendar: {
-        width: width * 0.55,
-        height: height * 0.125,
-    },
-    dateName: {
-        color: '#fff'
-    },
-    dateNumber: {
-        color: '#fff'
-    },
-    dayContainer: {
-        borderRadius: 0
-    },
-    calendarHeaderContainer: {
-    },
-    calendarHeader: {
-        color: '#fff'
-    },
-    highlightDateContainer: {
-        backgroundColor: '#c5c3c6',
-        borderRadius: 10
-    },
-    highlightDateName: {
-        fontWeight: '700',
-    },
-
-    bottomCalendar: {
-        flex: 1,
-        width: width * 0.95,
-        height: height * 0.175,
-        borderWidth: 1,
-        borderColor: 'red',
-        padding: 0,
-        margin: 0
-    }
 
 
 })

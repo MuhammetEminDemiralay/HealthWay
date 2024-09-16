@@ -1,12 +1,15 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { View } from 'react-native'
+import CustomHeader from '../../../component/customHeader'
+import { styles } from './styles'
 
 const ExerciseScreen = () => {
     return (
-        <View>
-            <Text>Exercise screen</Text>
+        <View style={styles.container}>
+            <CustomHeader />
         </View>
     )
 }
 
 export default ExerciseScreen
+

@@ -1,53 +1,32 @@
-import React, { useRef, useState } from 'react'
-import { FlatList, Pressable, Text, TextInput, View } from 'react-native'
+import React, { useState } from 'react'
+import { Dimensions, FlatList, Pressable, Text, TextInput, View } from 'react-native'
 import { styles } from './styles'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { scale } from 'react-native-size-matters';
+import { Ionicons, Fontisto } from '@expo/vector-icons';
 import { food } from '../../../datas/food';
-import CalendarStrip from "react-native-calendar-strip";
+import CustomHeader from '../../../component/customHeader';
+import { FoodItem } from '../../../model/food';
+import { scale } from 'react-native-size-matters';
 
 
 
 const FoodScreen = () => {
 
-    const [filterData, setFilterData] = useState<any>([]);
-    const calendarStripRef = useRef<any>();
-    const [activeDate, setActiveDate] = useState(new Date())
+    const [filterData, setFilterData] = useState<FoodItem[]>([]);
+    const { width, height } = Dimensions.get("window")
 
     const onChangeText = (value: string) => {
         const filterDatas = food.filter(item => item?.foodName.toLowerCase().includes(value.toLowerCase()))
         if (filterDatas) {
             setFilterData(filterDatas)
         }
-
     }
-
-    console.log(new Date());
-
 
 
     return (
         <View style={styles.container}>
 
-            <View>
-                <CalendarStrip
-                    ref={calendarStripRef}
-                    startingDate={new Date()}
-                    style={styles.headerCalendar}
-                    scrollable={true}
-                    dateNameStyle={styles.dateName}
-                    dateNumberStyle={styles.dateNumber}
-                    dayContainerStyle={styles.dayContainer}
-                    selectedDate={new Date()}
-                    onDateSelected={(date: moment.Moment) => setActiveDate(date.toDate())}
-                    numDaysInWeek={3}
-                    showMonth={true}
-                    highlightDateContainerStyle={styles.highlightDateContainer}
-                    highlightDateNameStyle={styles.highlightDateName}
-                    useNativeDriver={false}
-                    iconStyle={{ tintColor: '#fff' }}
-                />
-            </View>
+            <CustomHeader />
+
             <View style={styles.searchInputBox}>
                 <TextInput
                     style={styles.searchInput}
@@ -55,17 +34,50 @@ const FoodScreen = () => {
                     placeholderTextColor='gray'
                     onChangeText={(value: string) => onChangeText(value)}
                 />
-                <Pressable style={styles.searchBtn}>
-                    <MaterialCommunityIcons name="food-apple" size={scale(25)} color="#fff" />
-                </Pressable>
+                <View style={styles.searchIconBox}>
+                    <Fontisto name="search" size={scale(25)} color="#fff" />
+                </View>
             </View>
 
             <FlatList
                 data={filterData}
                 renderItem={({ item, index }) => (
-                    <Text style={{ color: '#fff' }}>{item.foodName}</Text>
+                    <Pressable
+                        key={index}
+                        style={styles.foodBtnBox}
+                    >
+                        <View style={styles.foodLeftBox}>
+                            <View style={styles.titleBox}>
+                                <Text
+                                    numberOfLines={2}
+                                    style={styles.foodNameText}
+                                >{item.foodName}</Text>
+                            </View>
+                            <View style={styles.subTextBox}>
+                                <Text style={styles.calText}>{item.energy?.value} cals</Text>
+                                <Text style={styles.measureText}> / {item.measure}</Text>
+                            </View>
+                        </View>
+                        <View style={styles.foodRightBox}>
+                            <Pressable
+                                style={({ pressed }) => [
+                                    {
+                                        backgroundColor: pressed ? 'rgba(255,255,255,0.5)' : 'black'
+                                    },
+                                    styles.checkBox
+                                ]}
+                            >
+                                {
+                                    false &&
+                                    <Ionicons name="checkmark-outline" size={24} color="#fff" />
+                                }
+                            </Pressable>
+                        </View>
+                    </Pressable>
                 )}
                 style={styles.flatlistContainer}
+                showsVerticalScrollIndicator={false}
+                snapToInterval={height * 0.085}
             />
 
         </View>

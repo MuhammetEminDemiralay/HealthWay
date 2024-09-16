@@ -1,48 +1,5 @@
-interface Nutrient {
-    value?: number;
-    unit?: string;
-}
+import { FoodItem } from "../model/food";
 
-interface FoodItem {
-    foodName: string;
-    measure: string;
-    weight?: Nutrient;
-    energy?: Nutrient;
-    energyKJ?: Nutrient;
-    protein?: Nutrient;
-    carbohydrate?: Nutrient;
-    totalSugar?: Nutrient;
-    totalDietaryFibre?: Nutrient;
-    totalFat?: Nutrient;
-    saturatedFat?: Nutrient;
-    cholesterol?: Nutrient;
-    calcium?: Nutrient;
-    iron?: Nutrient;
-    sodium?: Nutrient;
-    potassium?: Nutrient;
-    magnesium?: Nutrient;
-    phosphorus?: Nutrient;
-    vitaminA?: Nutrient;
-    vitaminC?: Nutrient;
-    vitaminB12?: Nutrient;
-    folate?: Nutrient;
-    thiamin?: Nutrient;
-    niacin?: Nutrient;
-    lycopene?: Nutrient;
-    betaCarotene?: Nutrient;
-    vitaminD?: Nutrient;
-    caffeine?: Nutrient;
-    dha?: Nutrient;
-    epa?: Nutrient;
-    transFat?: Nutrient;
-    monounsaturatedFat?: Nutrient;
-    polyunsaturatedFat?: Nutrient;
-    vitaminE?: Nutrient;
-    alcohol?: Nutrient;
-    riboflavin?: Nutrient;
-    category?: string;
-    subCategory?: string;
-}
 
 export const food: FoodItem[] = [
     {
@@ -171,7 +128,7 @@ export const food: FoodItem[] = [
         thiamin: { value: 0.04, unit: "mg" },
         riboflavin: { value: 4.6, unit: "mg" },
         niacin: { value: 21, unit: "NE" },
-        folate: { value: 0, unit: "DFE" },  
+        folate: { value: 0, unit: "DFE" },
         category: "Flours and Brans",
         subCategory: "Flours and Brans"
     },
@@ -183,7 +140,7 @@ export const food: FoodItem[] = [
         energyKJ: { value: 1278, unit: "kJ" },
         protein: { value: 5, unit: "g" },
         carbohydrate: { value: 67, unit: "g" },
-        totalSugar: { value: 0, unit: "g" }, 
+        totalSugar: { value: 0, unit: "g" },
         totalDietaryFibre: { value: 2.0, unit: "g" },
         totalFat: { value: 1, unit: "g" },
         saturatedFat: { value: 0.3, unit: "g" },
@@ -261,7 +218,7 @@ export const food: FoodItem[] = [
         energyKJ: { value: 33, unit: "kJ" },
         protein: { value: 1, unit: "g" },
         carbohydrate: { value: 2, unit: "g" },
-        totalSugar: { value: 0, unit: "g" }, // 'tr' yani trace (iz) yerine 0 olarak ayarlandı
+        totalSugar: { value: 0, unit: "g" },
         totalDietaryFibre: { value: 1.6, unit: "g" },
         totalFat: { value: 0, unit: "g" },
         saturatedFat: { value: 0.3, unit: "g" },
@@ -275,7 +232,7 @@ export const food: FoodItem[] = [
         thiamin: { value: 0.02, unit: "mg" },
         riboflavin: { value: 0.7, unit: "mg" },
         niacin: { value: 3, unit: "NE" },
-        folate: { value: 0, unit: "DFE" },  // Veride folate bilgisi mevcut değil, 0 veya eksik olarak ayarlandı
+        folate: { value: 0, unit: "DFE" }, 
         category: "Flours and Brans",
         subCategory: "Flours and Brans"
     },
@@ -287,7 +244,7 @@ export const food: FoodItem[] = [
         energyKJ: { value: 1005, unit: "kJ" },
         protein: { value: 7, unit: "g" },
         carbohydrate: { value: 50, unit: "g" },
-        totalSugar: { value: 0, unit: "g" }, // 'tr' yani trace (iz) yerine 0 olarak ayarlandı
+        totalSugar: { value: 0, unit: "g" },
         totalDietaryFibre: { value: 2.0, unit: "g" },
         totalFat: { value: 1, unit: "g" },
         saturatedFat: { value: 0.1, unit: "g" },
@@ -313,7 +270,7 @@ export const food: FoodItem[] = [
         energyKJ: { value: 1093, unit: "kJ" },
         protein: { value: 9, unit: "g" },
         carbohydrate: { value: 52, unit: "g" },
-        totalSugar: { value: 0, unit: "g" }, // 'tr' yani trace (iz) yerine 0 olarak ayarlandı
+        totalSugar: { value: 0, unit: "g" }, 
         totalDietaryFibre: { value: 1.7, unit: "g" },
         totalFat: { value: 1, unit: "g" },
         saturatedFat: { value: 0.2, unit: "g" },
@@ -339,7 +296,7 @@ export const food: FoodItem[] = [
         energyKJ: { value: 1096, unit: "kJ" },
         protein: { value: 6, unit: "g" },
         carbohydrate: { value: 56, unit: "g" },
-        totalSugar: { value: 0, unit: "g" }, // 'tr' yani trace (iz) yerine 0 olarak ayarlandı
+        totalSugar: { value: 0, unit: "g" },
         totalDietaryFibre: { value: 1.2, unit: "g" },
         totalFat: { value: 1, unit: "g" },
         saturatedFat: { value: 0.1, unit: "g" },
@@ -365,7 +322,7 @@ export const food: FoodItem[] = [
         energyKJ: { value: 899, unit: "kJ" },
         protein: { value: 9, unit: "g" },
         carbohydrate: { value: 46, unit: "g" },
-        totalSugar: { value: 0, unit: "g" }, // 'tr' yani trace (iz) yerine 0 olarak ayarlandı
+        totalSugar: { value: 0, unit: "g" },
         totalDietaryFibre: { value: 7.7, unit: "g" },
         totalFat: { value: 1, unit: "g" },
         saturatedFat: { value: 0.2, unit: "g" },
@@ -443,16 +400,16 @@ export const food: FoodItem[] = [
         energyKJ: { value: 353, unit: "kJ" },
         protein: { value: 2, unit: "g" },
         carbohydrate: { value: 19, unit: "g" },
-        totalSugar: { value: 0, unit: "g" }, 
+        totalSugar: { value: 0, unit: "g" },
         totalDietaryFibre: { value: 0.5, unit: "g" },
-        totalFat: { value: 0, unit: "g" }, 
+        totalFat: { value: 0, unit: "g" },
         saturatedFat: { value: 0, unit: "g" },
         cholesterol: { value: 1, unit: "mg" },
         calcium: { value: 84, unit: "mg" },
         iron: { value: 0.7, unit: "mg" },
         sodium: { value: 0, unit: "mg" },
         potassium: { value: 0, unit: "mg" },
-        magnesium: { value: 0, unit: "mg" }, 
+        magnesium: { value: 0, unit: "mg" },
         phosphorus: { value: 60, unit: "mg" },
         thiamin: { value: 0.1, unit: "mg" },
         riboflavin: { value: 0.06, unit: "mg" },

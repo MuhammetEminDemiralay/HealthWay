@@ -14,7 +14,7 @@ const UserStack = () => {
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false,
-                tabBarStyle: { height: height * 0.1, backgroundColor: '#f5cb5c' },
+                tabBarStyle: { height: height * 0.1, backgroundColor: '#778da9' },
                 tabBarItemStyle: { height: height * 0.1 }
             }}
         >
@@ -23,7 +23,7 @@ const UserStack = () => {
                 component={MainScreen}
                 options={{
                     tabBarIcon: () => (
-                        <Entypo name="home" size={28} color="black" />
+                        <Entypo name="home" size={28} color="#fff" />
                     )
                 }}
             />
@@ -32,7 +32,7 @@ const UserStack = () => {
                 component={ProfileScreen}
                 options={{
                     tabBarIcon: () => (
-                        <FontAwesome name="user" size={24} color="black" />
+                        <FontAwesome name="user" size={24} color="#fff" />
                     )
                 }}
             />

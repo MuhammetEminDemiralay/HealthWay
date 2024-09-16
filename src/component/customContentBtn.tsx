@@ -5,13 +5,27 @@ import { SimpleLineIcons, MaterialIcons, Ionicons, MaterialCommunityIcons } from
 
 const { width, height } = Dimensions.get("window")
 
-const CustomContentBtn = ({ text, value = 0, icon, setVisible }: any) => {
+
+interface CustomContenBtnProps {
+    text: string,
+    value: number,
+    icon?: string,
+    setVisible: () => void
+}
+
+
+const CustomContentBtn = ({ text, value = 0, icon, setVisible }: CustomContenBtnProps) => {
+
 
 
     return (
         <Pressable style={({ pressed }) => [
             {
-                backgroundColor: pressed ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0)'
+                backgroundColor: pressed ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0)',
+                borderTopLeftRadius: text == 'Exercise' ? 10 : 0,
+                borderTopRightRadius: text == 'Breakfast' ? 10 : 0,
+                borderBottomRightRadius: text == 'Snacks' ? 10 : 0,
+                borderBottomLeftRadius: text == 'Notes' ? 10 : 0
             },
             styles.btnContent
         ]}
@@ -52,7 +66,6 @@ const styles = StyleSheet.create({
         height: height * 0.125,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 10
     },
     btnTitleText: {
         width: width * 0.2,

@@ -1,12 +1,15 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import CustomHeader from '../../../component/customHeader'
+import { styles } from './styles'
 
 const WaterScreen = () => {
     return (
-        <View>
-            <Text>Water screen</Text>
+        <View style={styles.container}>
+            <CustomHeader />
         </View>
     )
 }
 
 export default WaterScreen
+
