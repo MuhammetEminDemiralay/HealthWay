@@ -5,6 +5,9 @@ import { scale } from 'react-native-size-matters';
 import { FontAwesome, Entypo } from '@expo/vector-icons'
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NavigationProps } from '../datas/navigationType';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../redux/store';
+import { setActiveDate } from '../redux/activitySlice';
 
 
 
@@ -13,23 +16,22 @@ const { width, height } = Dimensions.get("window")
 const CustomHeader = () => {
 
     const calendarStripRef = useRef<any>();
-    const [activeDate, setActiveDate] = useState(new Date())
     const navigation: NavigationProps = useNavigation()
     const { params, name }: any = useRoute();
     const [onCategory, setOnCategory] = useState(false)
     const [activeFoodCategory, setActiveFoodCategory] = useState<string | undefined>(params?.value)
     const foodCategory = ["breakfast", "lunch", "dinner", "snacks"]
+    const { activeDate } = useSelector(((state: RootState) => state.activity))
+    const dispatch = useDispatch<AppDispatch>()
 
-    const setTodayDate = () => {
-        if (calendarStripRef.current != undefined) {
-            calendarStripRef.current.setSelectedDate(new Date())
-        }
-    }
 
     const setDropdown = (item: string) => {
         setActiveFoodCategory(item)
         setOnCategory(false)
     }
+
+
+
 
 
     return (
@@ -100,7 +102,7 @@ const CustomHeader = () => {
                         },
                         styles.todayBtn
                     ]}
-                    onPress={setTodayDate}
+                    onPress={() => dispatch(setActiveDate(new Date))}
                 >
                     <Text style={styles.todayBtnText}>Today</Text>
                 </Pressable>
@@ -114,7 +116,7 @@ const CustomHeader = () => {
                     dateNumberStyle={styles.dateNumber}
                     dayContainerStyle={styles.dayContainer}
                     selectedDate={activeDate}
-                    onDateSelected={(date: moment.Moment) => setActiveDate(date.toDate())}
+                    onDateSelected={(date: moment.Moment) => dispatch(setActiveDate(date.toDate()))}
                     numDaysInWeek={3}
                     showMonth={false}
                     highlightDateContainerStyle={styles.highlightDateContainer}

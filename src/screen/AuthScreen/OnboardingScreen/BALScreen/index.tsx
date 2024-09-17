@@ -22,7 +22,7 @@ const BALScreen = () => {
         { level: "Moderately Active", description: "Moderate activity several days a week", examples: "Regular exercisers, active students" },
         { level: "Active", description: "Regularly engages in physical activities throughout the day", examples: "Waiters, retail workers, regular exercisers." },
         { level: "Very Active", description: "Spends most of the day engaged in intense physical activities", examples: "Construction workers, athletes, farmers." }
-    ];
+    ]; 
     const { bal }: Onboarding = useSelector((state: any) => state.onboarding)
     const [warningState, setWarningState] = useState(false)
 

@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./authSlice";
 import onboardingSlice from "./onboardingSlice";
 import userSlice from "./userSlice";
+import activitySlice from "./activitySlice";
 
 
 
@@ -9,7 +10,8 @@ const store = configureStore({
     reducer: {
         auth: authSlice,
         onboarding: onboardingSlice,
-        user : userSlice
+        user : userSlice,
+        activity : activitySlice
     },
 
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false })

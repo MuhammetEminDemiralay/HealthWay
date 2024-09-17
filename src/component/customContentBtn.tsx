@@ -2,6 +2,8 @@ import React from 'react'
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native'
 import { scale } from 'react-native-size-matters'
 import { SimpleLineIcons, MaterialIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../redux/store';
 
 const { width, height } = Dimensions.get("window")
 
@@ -14,9 +16,14 @@ interface CustomContenBtnProps {
 }
 
 
-const CustomContentBtn = ({ text, value = 0, icon, setVisible }: CustomContenBtnProps) => {
+const CustomContentBtn = ({ text, value, icon, setVisible }: CustomContenBtnProps) => {
 
-
+    
+    const dispatch = useDispatch<AppDispatch>();
+    const { activeFoodCategory } = useSelector((state: RootState) => state.activity)
+    
+    
+    
 
     return (
         <Pressable style={({ pressed }) => [
@@ -74,7 +81,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#fff',
         fontSize: scale(13),
-        fontWeight: '500'
+        fontWeight: '500',
     },
     wrapper: {
         width: width * 0.2,

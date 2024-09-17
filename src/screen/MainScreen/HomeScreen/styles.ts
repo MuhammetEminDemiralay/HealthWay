@@ -53,6 +53,14 @@ export const styles = StyleSheet.create({
     middleTopContent: {
         width: width * 0.55,
         height: height * 0.125,
+        alignItems: 'center',
+        justifyContent: 'center',
+        rowGap: height * 0.005
+    },
+    requiredCalorieText: {
+        fontSize: scale(15),
+        fontWeight: '500',
+        color: '#fff'
     },
     calorieMeterBox: {
         width: width * 0.55,
@@ -84,7 +92,7 @@ export const styles = StyleSheet.create({
         borderRadius: height * 0.1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#fff'
+        backgroundColor: '#565e66'
     },
     middleBottomContent: {
         width: width * 0.55,

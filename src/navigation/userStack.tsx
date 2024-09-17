@@ -1,14 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { MainScreen, ProfileScreen } from '../screen'
 import { Entypo, FontAwesome } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
 
-
 const Tab = createBottomTabNavigator()
 const { width, height } = Dimensions.get("window")
 
 const UserStack = () => {
+
     return (
         <Tab.Navigator
             screenOptions={{

@@ -6,19 +6,29 @@ import { food } from '../../../datas/food';
 import CustomHeader from '../../../component/customHeader';
 import { FoodItem } from '../../../model/food';
 import { scale } from 'react-native-size-matters';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../redux/store';
+import { DailyCalorie } from '../../../model/activity';
+import { setCaloriesConsumed } from '../../../redux/activitySlice';
 
 
 
 const FoodScreen = () => {
 
     const [filterData, setFilterData] = useState<FoodItem[]>([]);
-    const { width, height } = Dimensions.get("window")
+    const { width, height } = Dimensions.get("window");
+    const dispatch = useDispatch<AppDispatch>();
+    const { foodsConsumed,activeDate} = useSelector((state: RootState) => state.activity)
 
     const onChangeText = (value: string) => {
         const filterDatas = food.filter(item => item?.foodName.toLowerCase().includes(value.toLowerCase()))
         if (filterDatas) {
             setFilterData(filterDatas)
         }
+    }
+
+    const setFood = (item: FoodItem) => {
+        dispatch(setCaloriesConsumed(item.foodName))
     }
 
 
@@ -42,7 +52,7 @@ const FoodScreen = () => {
             <FlatList
                 data={filterData}
                 renderItem={({ item, index }) => (
-                    <Pressable
+                    <View
                         key={index}
                         style={styles.foodBtnBox}
                     >
@@ -66,6 +76,7 @@ const FoodScreen = () => {
                                     },
                                     styles.checkBox
                                 ]}
+                                onPress={() => setFood(item)}
                             >
                                 {
                                     false &&
@@ -73,7 +84,7 @@ const FoodScreen = () => {
                                 }
                             </Pressable>
                         </View>
-                    </Pressable>
+                    </View>
                 )}
                 style={styles.flatlistContainer}
                 showsVerticalScrollIndicator={false}

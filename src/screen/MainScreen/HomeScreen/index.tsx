@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Dimensions, Pressable, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, } from '../../../redux/store'
+import { AppDispatch, RootState, } from '../../../redux/store'
 import { Auth } from '../../../model/auth'
 import { getUserInfoAsyncstorage } from '../../../redux/onboardingSlice'
 import { FontAwesome6 } from '@expo/vector-icons';
@@ -11,22 +11,30 @@ import * as Progress from 'react-native-progress'
 import { useNavigation } from '@react-navigation/native'
 import { NavigationProps } from '../../../datas/navigationType'
 import CustomHeader from '../../../component/customHeader'
-import { BlurView } from 'expo-blur'
+import { bmr, calorieCalculation } from '../../../helper/calorieCalculation'
+import { setDailyRequiredCalories } from '../../../redux/activitySlice'
 
 
 const HomeScreen = () => {
 
     const dispatch = useDispatch<AppDispatch>();
     const { user, uid }: Auth = useSelector((state: any) => state.auth)
-    const { bal, weeklyTarget } = useSelector((state: any) => state.onboarding)
+    const { updateStatus } = useSelector((state: any) => state.onboarding);
+    const profile = useSelector((state: any) => state.onboarding)
+    const { dailyRequiredCalories } = useSelector((state: RootState) => state.activity)
+
     const { width, height } = Dimensions.get("window")
-    const calendarStripRef = useRef<any>();
-    const [activeDate, setActiveDate] = useState(new Date())
     const navigation: NavigationProps = useNavigation();
 
     useEffect(() => {
         dispatch(getUserInfoAsyncstorage())
     }, [])
+
+    useEffect(() => {
+        const bmrInfo = bmr(profile)
+        const calorie = calorieCalculation(profile, bmrInfo);
+        dispatch(setDailyRequiredCalories(calorie));
+    }, [updateStatus])
 
 
 
@@ -45,7 +53,13 @@ const HomeScreen = () => {
 
                 <View style={styles.middleContent}>
                     <Pressable style={styles.middleTopContent}>
-
+                        {
+                            dailyRequiredCalories?.calorie != undefined &&
+                            <>
+                                <Text style={styles.requiredCalorieText}>Daily Calorie</Text>
+                                <Text style={styles.requiredCalorieText}>{Math.ceil(dailyRequiredCalories.calorie)}</Text>
+                            </>
+                        }
                     </Pressable>
 
                     <View style={styles.calorieMeterBox}>

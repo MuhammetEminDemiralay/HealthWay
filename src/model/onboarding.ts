@@ -8,13 +8,14 @@ export interface Onboarding {
     },
     genderAge: {
         gender: string,
-        age: number | null
+        age: number
     },
     heightWeight: {
-        height: number | null,
-        weight: number | null,
+        height: number,
+        weight: number,
     },
-    weeklyTarget: number | null
+    weeklyTarget: number,
+    updateStatus?: boolean
 }
 
 

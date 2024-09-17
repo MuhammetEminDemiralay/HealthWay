@@ -31,13 +31,14 @@ const initialState: Onboarding = {
     },
     genderAge: {
         gender: "",
-        age: null
+        age: 0
     },
     heightWeight: {
-        height: null,
-        weight: null
+        height: 0,
+        weight: 0
     },
-    weeklyTarget: null
+    weeklyTarget: 0,
+    updateStatus: false
 }
 
 const onboardingSlice = createSlice({
@@ -98,6 +99,7 @@ const onboardingSlice = createSlice({
                     state.reasons = action.payload.reasons
                     state.target = action.payload.target
                     state.weeklyTarget = action.payload.weeklyTarget
+                    state.updateStatus = true;
                 }
             })
             .addCase(getUserInfoAsyncstorage.rejected, (state, action) => {
