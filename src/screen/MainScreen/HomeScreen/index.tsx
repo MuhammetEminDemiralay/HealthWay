@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Dimensions, Pressable, Text, View } from 'react-native'
+import { Button, Dimensions, Pressable, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState, } from '../../../redux/store'
 import { Auth } from '../../../model/auth'
@@ -12,7 +12,10 @@ import { useNavigation } from '@react-navigation/native'
 import { NavigationProps } from '../../../datas/navigationType'
 import CustomHeader from '../../../component/customHeader'
 import { bmr, calorieCalculation } from '../../../helper/calorieCalculation'
-import { setDailyRequiredCalories } from '../../../redux/activitySlice'
+import { getFoodAsyncstorage, setActiveMealFoodCategory, setDailyRequiredCalories } from '../../../redux/activitySlice'
+import { DataModel } from '../../../model/activity'
+import { food } from '../../../datas/food'
+import { FoodItem } from '../../../model/food'
 
 
 const HomeScreen = () => {
@@ -21,10 +24,11 @@ const HomeScreen = () => {
     const { user, uid }: Auth = useSelector((state: any) => state.auth)
     const { updateStatus } = useSelector((state: any) => state.onboarding);
     const profile = useSelector((state: any) => state.onboarding)
-    const { dailyRequiredCalories } = useSelector((state: RootState) => state.activity)
+    const { dailyRequiredCalories, activeDate, allDataOfTheDay } = useSelector((state: RootState) => state.activity)
 
     const { width, height } = Dimensions.get("window")
-    const navigation: NavigationProps = useNavigation();
+    const navigation: any = useNavigation();
+    const [productİnformation, setProductInformation] = useState<FoodItem[]>([])
 
     useEffect(() => {
         dispatch(getUserInfoAsyncstorage())
@@ -36,6 +40,35 @@ const HomeScreen = () => {
         dispatch(setDailyRequiredCalories(calorie));
     }, [updateStatus])
 
+    useEffect(() => {
+        dispatch(getFoodAsyncstorage())
+    }, [activeDate])
+
+    useEffect(() => {
+        setProductInformation([])
+        allDataOfTheDay.forEach((item: DataModel) => {
+            const data = food.find((foodData: FoodItem) => foodData.foodName == item.foodName)
+            if (data != undefined) {
+                for (let i = 1; i <= item.amount; i++) {
+                    setProductInformation((prev) => [...prev, data])
+                }
+            }
+        })
+    }, [allDataOfTheDay])
+
+
+    const navigate = (route: string) => {
+        if (route == "breakfast" || route == 'lunch' || route == 'dinner' || route == 'snacks') {
+            navigation.navigate('food')
+            dispatch(setActiveMealFoodCategory(route))
+        } else {
+            navigation.navigate(route)
+            dispatch(setActiveMealFoodCategory(route))
+        }
+    }
+
+    console.log("Aa", productİnformation.length);
+
 
 
     return (
@@ -45,10 +78,10 @@ const HomeScreen = () => {
 
             <View style={styles.content}>
                 <View style={styles.leftContent}>
-                    <CustomContentBtn text="Exercise" value={0} icon="sports-gymnastics" setVisible={() => navigation.navigate('exercise', { value: 'exercise' })} />
-                    <CustomContentBtn text="Steps" value={0} icon="footsteps-sharp" setVisible={() => navigation.navigate('step', { value: "steps" })} />
-                    <CustomContentBtn text="Water" value={0} icon="cup" setVisible={() => navigation.navigate("water", { value: "water" })} />
-                    <CustomContentBtn text="Notes" value={0} icon="note" setVisible={() => navigation.navigate("notes", { value: 'notes' })} />
+                    <CustomContentBtn text="Exercise" value={0} icon="sports-gymnastics" onPress={() => navigate("exercise")} />
+                    <CustomContentBtn text="Steps" value={0} icon="footsteps-sharp" onPress={() => navigate("step")} />
+                    <CustomContentBtn text="Water" value={0} icon="cup" onPress={() => navigate("water")} />
+                    <CustomContentBtn text="Notes" value={0} icon="note" onPress={() => navigate("notes")} />
                 </View>
 
                 <View style={styles.middleContent}>
@@ -67,7 +100,9 @@ const HomeScreen = () => {
                             <Progress.Circle thickness={height * 0.025} style={styles.progress} size={height * 0.25} borderWidth={0} color='lime' progress={0.8} />
                             <View style={styles.emtyBox}></View>
                             <View style={styles.calorieScreen}>
-                                <Text style={{ fontSize: 30 }}>0</Text>
+                                {
+                                    <Text style={{ fontSize: 30 }}>{productİnformation.reduce((acc, item) => acc + (item.energy.value != udne) , 0)}</Text>
+                                }
                             </View>
                         </View>
                     </View>
@@ -83,17 +118,17 @@ const HomeScreen = () => {
 
                 </View>
                 <View style={styles.rightContent}>
-                    <CustomContentBtn text="Breakfast" value={0} setVisible={() => navigation.navigate('food', { value: 'breakfast' })} />
-                    <CustomContentBtn text="Lunch" value={0} setVisible={() => navigation.navigate('food', { value: 'lunch' })} />
-                    <CustomContentBtn text="Dinner" value={0} setVisible={() => navigation.navigate('food', { value: 'dinner' })} />
-                    <CustomContentBtn text="Snacks" value={0} setVisible={() => navigation.navigate('food', { value: 'snacks' })} />
+                    <CustomContentBtn text="Breakfast" value={0} onPress={() => navigate("breakfast")} />
+                    <CustomContentBtn text="Lunch" value={0} onPress={() => navigate("lunch")} />
+                    <CustomContentBtn text="Dinner" value={0} onPress={() => navigate("dinner")} />
+                    <CustomContentBtn text="Snacks" value={0} onPress={() => navigate("snacks")} />
                 </View>
 
             </View>
 
 
             <View style={styles.activityContainer}>
-
+                <Button title="çek" onPress={() => dispatch(getFoodAsyncstorage())} />
             </View>
 
         </View>

@@ -7,7 +7,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { NavigationProps } from '../datas/navigationType';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
-import { setActiveDate } from '../redux/activitySlice';
+import { setActiveDate, setActiveMealFoodCategory } from '../redux/activitySlice';
 
 
 
@@ -21,16 +21,20 @@ const CustomHeader = () => {
     const [onCategory, setOnCategory] = useState(false)
     const [activeFoodCategory, setActiveFoodCategory] = useState<string | undefined>(params?.value)
     const foodCategory = ["breakfast", "lunch", "dinner", "snacks"]
-    const { activeDate } = useSelector(((state: RootState) => state.activity))
+    const { activeDate, activeMealFoodCategory } = useSelector(((state: RootState) => state.activity))
     const dispatch = useDispatch<AppDispatch>()
 
 
     const setDropdown = (item: string) => {
+        dispatch(setActiveMealFoodCategory(item))
         setActiveFoodCategory(item)
         setOnCategory(false)
     }
 
-
+    const goBack = () => {
+        dispatch(setActiveMealFoodCategory("health way"))
+        navigation.goBack()
+    }
 
 
 
@@ -64,15 +68,16 @@ const CustomHeader = () => {
             <View style={styles.headerTopContainer}>
                 <Pressable style={styles.backIconBox}>
                     {
-                        params?.value != undefined &&
-                        < FontAwesome onPress={() => navigation.goBack()} name="long-arrow-left" size={scale(26)} color="#fff" />
+                        activeMealFoodCategory != "health way" &&
+                        < FontAwesome onPress={() => goBack()} name="long-arrow-left" size={scale(26)} color="#fff" />
                     }
                 </Pressable>
                 <View style={styles.headerTextBox}>
                     {
-                        activeFoodCategory != undefined ?
-                            <Text style={styles.headerText}>{activeFoodCategory}</Text> :
+                        activeMealFoodCategory != 'health way' ?
+                            <Text style={styles.headerText}>{activeMealFoodCategory}</Text> :
                             <Text style={styles.headerText}>HEALTH WAY</Text>
+
                     }
 
                     {

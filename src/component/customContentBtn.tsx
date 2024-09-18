@@ -12,18 +12,18 @@ interface CustomContenBtnProps {
     text: string,
     value: number,
     icon?: string,
-    setVisible: () => void
+    onPress: () => void
 }
 
 
-const CustomContentBtn = ({ text, value, icon, setVisible }: CustomContenBtnProps) => {
+const CustomContentBtn = ({ text, value, icon, onPress }: CustomContenBtnProps) => {
 
-    
+
     const dispatch = useDispatch<AppDispatch>();
-    const { activeFoodCategory } = useSelector((state: RootState) => state.activity)
-    
-    
-    
+    const { activeMealFoodCategory } = useSelector((state: RootState) => state.activity)
+
+
+
 
     return (
         <Pressable style={({ pressed }) => [
@@ -36,7 +36,7 @@ const CustomContentBtn = ({ text, value, icon, setVisible }: CustomContenBtnProp
             },
             styles.btnContent
         ]}
-            onPress={setVisible}
+            onPress={onPress}
         >
             <Text style={styles.btnTitleText}>{text}</Text>
             <View style={styles.wrapper}>

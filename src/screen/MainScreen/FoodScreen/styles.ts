@@ -55,6 +55,21 @@ export const styles = StyleSheet.create({
         height: height * 0.075,
         alignItems: 'center',
         justifyContent: 'center',
+        flexDirection: 'row',
+        columnGap: width * 0.015
+    },
+    amountBox: {
+        width: width * 0.08,
+        height: height * 0.07,
+    },
+    amountBtnBox: {
+        width: width * 0.08,
+        height: height * 0.035,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 4,
+        borderWidth: 0.5,
+        borderColor: '#fff'
     },
     checkBox: {
         width: width * 0.08,

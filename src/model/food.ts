@@ -8,7 +8,7 @@ export interface FoodItem {
     foodName: string;
     measure: string;
     weight?: Nutrient;
-    energy?: Nutrient;
+    energy: Nutrient;
     energyKJ?: Nutrient;
     protein?: Nutrient;
     carbohydrate?: Nutrient;

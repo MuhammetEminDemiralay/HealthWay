@@ -1,7 +1,8 @@
 export interface Content {
     foodName: string,
     amount: number,
-    time: Date
+    day: Date,
+    mealTime: string
 }
 
 export interface DailyCalorie {
@@ -15,5 +16,18 @@ export interface DailyCalorie {
     },
     foodsConsumed: Content[]
     activeDate: Date,
-    activeFoodCategory: string
+    activeMealFoodCategory: string,
+    allDataOfTheDay: DataModel[]
+}
+
+export interface DataModel {
+    foodName: string,
+    amount: number,
+    day: Date,
+    mealTime: string
+}
+
+export interface Params {
+    foodName: string,
+    amountState?: string
 }
