@@ -15,7 +15,7 @@ export interface Onboarding {
         weight: number,
     },
     weeklyTarget: number,
-    updateStatus?: boolean
+    updateProfile?: boolean
 }
 
 

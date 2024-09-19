@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Dimensions, Pressable, Text, View } from 'react-native'
+import { Dimensions, Pressable, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState, } from '../../../redux/store'
 import { Auth } from '../../../model/auth'
@@ -22,27 +22,30 @@ const HomeScreen = () => {
 
     const dispatch = useDispatch<AppDispatch>();
     const { user, uid }: Auth = useSelector((state: any) => state.auth)
-    const { updateStatus } = useSelector((state: any) => state.onboarding);
-    const profile = useSelector((state: any) => state.onboarding)
-    const { dailyRequiredCalories, activeDate, allDataOfTheDay } = useSelector((state: RootState) => state.activity)
-
+    const { updateProfile } = useSelector((state: RootState) => state.onboarding);
     const { width, height } = Dimensions.get("window")
+    const { dailyRequiredCalories, activeDate, allDataOfTheDay } = useSelector((state: RootState) => state.activity)
     const navigation: any = useNavigation();
     const [productİnformation, setProductInformation] = useState<FoodItem[]>([])
+    const [caloriesConsumed, setCaloriesConsumed] = useState(0);
+    const [carbohydrate, setCarbohydrate] = useState(0)
+    const [protein, setProtein] = useState(0)
+    const [fat, setFat] = useState(0)
 
     useEffect(() => {
         dispatch(getUserInfoAsyncstorage())
     }, [])
 
     useEffect(() => {
-        const bmrInfo = bmr(profile)
-        const calorie = calorieCalculation(profile, bmrInfo);
-        dispatch(setDailyRequiredCalories(calorie));
-    }, [updateStatus])
-
-    useEffect(() => {
         dispatch(getFoodAsyncstorage())
     }, [activeDate])
+
+    useEffect(() => {
+        setCaloriesConsumed(productİnformation.reduce((acc, item) => acc + (item.energy.value != undefined ? item.energy.value : 0), 0))
+        setCarbohydrate(productİnformation.reduce((acc, item) => acc + (item.carbohydrate?.value != undefined ? item.carbohydrate.value : 0), 0))
+        setProtein(productİnformation.reduce((acc, item) => acc + (item.protein?.value != undefined ? item.protein.value : 0), 0))
+        setFat(productİnformation.reduce((acc, item) => acc + (item.totalFat?.value != undefined ? item.totalFat.value : 0), 0))
+    }, [productİnformation])
 
     useEffect(() => {
         setProductInformation([])
@@ -54,6 +57,8 @@ const HomeScreen = () => {
                 }
             }
         })
+
+
     }, [allDataOfTheDay])
 
 
@@ -66,8 +71,6 @@ const HomeScreen = () => {
             dispatch(setActiveMealFoodCategory(route))
         }
     }
-
-    console.log("Aa", productİnformation.length);
 
 
 
@@ -86,23 +89,55 @@ const HomeScreen = () => {
 
                 <View style={styles.middleContent}>
                     <Pressable style={styles.middleTopContent}>
-                        {
-                            dailyRequiredCalories?.calorie != undefined &&
-                            <>
-                                <Text style={styles.requiredCalorieText}>Daily Calorie</Text>
-                                <Text style={styles.requiredCalorieText}>{Math.ceil(dailyRequiredCalories.calorie)}</Text>
-                            </>
-                        }
+                        <Text style={styles.requiredCalorieText}>Daily Calorie</Text>
+                        <Text style={styles.requiredCalorieText}>{dailyRequiredCalories.calorie != null ? Math.floor(dailyRequiredCalories.calorie) : 0}</Text>
                     </Pressable>
 
                     <View style={styles.calorieMeterBox}>
                         <View style={styles.calorieMeter}>
-                            <Progress.Circle thickness={height * 0.025} style={styles.progress} size={height * 0.25} borderWidth={0} color='lime' progress={0.8} />
+                            <Progress.Circle
+                                thickness={height * 0.025}
+                                style={styles.progress} size={height * 0.25}
+                                borderWidth={0}
+                                color={
+                                    dailyRequiredCalories.calorie &&
+                                        new Date(new Date().toDateString()) > new Date(activeDate.toDateString()) ?
+                                        (
+                                            dailyRequiredCalories.calorie > caloriesConsumed ?
+                                                'red' :
+                                                'lime'
+                                        ) :
+                                        'lime'
+
+                                }
+                                progress={
+                                    dailyRequiredCalories.calorie != null ?
+                                        (caloriesConsumed / dailyRequiredCalories.calorie) : 0} />
                             <View style={styles.emtyBox}></View>
                             <View style={styles.calorieScreen}>
                                 {
-                                    <Text style={{ fontSize: 30 }}>{productİnformation.reduce((acc, item) => acc + (item.energy.value != udne) , 0)}</Text>
+                                    caloriesConsumed != undefined &&
+                                    <Text style={[
+                                        {
+                                            color: dailyRequiredCalories.calorie &&
+                                                new Date(new Date().toDateString()) > new Date(activeDate.toDateString()) ?
+                                                (
+                                                    dailyRequiredCalories.calorie > caloriesConsumed ?
+                                                        '#ff4a68' :
+                                                        'lime'
+                                                ) :
+                                                'lime'
+                                        },
+                                        styles.calorieText
+                                    ]}>{caloriesConsumed}</Text>
                                 }
+                                <View>
+                                    <Text style={styles.calorieTextInfo}>{dailyRequiredCalories.calorie && dailyRequiredCalories.calorie > caloriesConsumed ? 'Left' : 'Over'}</Text>
+                                    <Text style={styles.calorieTextInfo}>{dailyRequiredCalories.calorie && dailyRequiredCalories.calorie > caloriesConsumed ?
+                                        Math.floor(dailyRequiredCalories.calorie - caloriesConsumed) :
+                                        (dailyRequiredCalories.calorie && Math.floor(-1 * (dailyRequiredCalories.calorie - caloriesConsumed)))}
+                                    </Text>
+                                </View>
                             </View>
                         </View>
                     </View>
@@ -128,10 +163,37 @@ const HomeScreen = () => {
 
 
             <View style={styles.activityContainer}>
-                <Button title="çek" onPress={() => dispatch(getFoodAsyncstorage())} />
+                <View>
+                    <Progress.Bar
+                        progress={carbohydrate / (dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.carbohydrare ?
+                            dailyRequiredCalories.percentage.carbohydrare * dailyRequiredCalories.calorie : 1
+                        )}
+                        width={width * 0.25}
+                        color='lime'
+                    />
+                </View>
+                <View>
+                    <Progress.Bar
+                        progress={protein / (dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.protein ?
+                            dailyRequiredCalories.percentage.protein * dailyRequiredCalories.calorie : 1
+                        )}
+                        width={width * 0.25}
+                        color='lime'
+                    />
+                </View>
+                <View>
+                    <Progress.Bar
+                        progress={fat / (dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.fat ?
+                            dailyRequiredCalories.percentage.fat * dailyRequiredCalories.calorie : 1
+                        )}
+                        width={width * 0.25}
+                        color='lime'
+                    />
+
+                </View>
             </View>
 
-        </View>
+        </View >
     )
 }
 

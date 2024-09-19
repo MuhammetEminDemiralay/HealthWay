@@ -1,15 +1,21 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Onboarding } from "../model/onboarding";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { bmr, calorieCalculation } from "../helper/calorieCalculation";
+import { setDailyRequiredCalories } from "./activitySlice";
 
 
 
 
-export const getUserInfoAsyncstorage = createAsyncThunk("get/userInfoAsyncstorage", async () => {
+export const getUserInfoAsyncstorage = createAsyncThunk("get/userInfoAsyncstorage", async (_, { dispatch }) => {
     try {
         const userInfo = await AsyncStorage.getItem("_user")
         if (userInfo != null) {
-            return JSON.parse(userInfo);
+            const info = JSON.parse(userInfo)
+            const bmrInfo = bmr(info)
+            const calorie = calorieCalculation(info, bmrInfo);
+            dispatch(setDailyRequiredCalories(calorie));
+            return info;
         } else {
             return null;
         }
@@ -38,7 +44,7 @@ const initialState: Onboarding = {
         weight: 0
     },
     weeklyTarget: 0,
-    updateStatus: false
+    updateProfile: false
 }
 
 const onboardingSlice = createSlice({
@@ -99,7 +105,7 @@ const onboardingSlice = createSlice({
                     state.reasons = action.payload.reasons
                     state.target = action.payload.target
                     state.weeklyTarget = action.payload.weeklyTarget
-                    state.updateStatus = true;
+                    state.updateProfile = true;
                 }
             })
             .addCase(getUserInfoAsyncstorage.rejected, (state, action) => {

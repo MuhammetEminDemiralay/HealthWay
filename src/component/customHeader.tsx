@@ -36,6 +36,10 @@ const CustomHeader = () => {
         navigation.goBack()
     }
 
+    const setTodayDate = () => {
+        dispatch(setActiveDate(new Date()))
+
+    }
 
 
     return (
@@ -103,13 +107,25 @@ const CustomHeader = () => {
                 <Pressable
                     style={({ pressed }) => [
                         {
-                            backgroundColor: pressed ? '#c5c3c6' : 'rgba(0,0,0,0)'
+                            backgroundColor: pressed ?
+                                '#c5c3c6' :
+                                new Date().toDateString() == activeDate.toDateString() ?
+                                    'rgba(255,255,255,0.25)' :
+                                    'rgba(0,0,0,0)'
                         },
                         styles.todayBtn
                     ]}
-                    onPress={() => dispatch(setActiveDate(new Date))}
+                    onPress={setTodayDate}
                 >
-                    <Text style={styles.todayBtnText}>Today</Text>
+                    <Text style={[
+                        {
+                            color: new Date().toDateString() == activeDate.toDateString() ?
+                                'black' :
+                                '#fff'
+
+                        },
+                        styles.todayBtnText
+                    ]}>Today</Text>
                 </Pressable>
 
                 <CalendarStrip
@@ -179,7 +195,6 @@ const styles = StyleSheet.create({
         marginHorizontal: width * 0.025
     },
     todayBtnText: {
-        color: "#fff",
         fontWeight: '500',
         fontSize: scale(14)
     },

@@ -92,7 +92,17 @@ export const styles = StyleSheet.create({
         borderRadius: height * 0.1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#565e66'
+        backgroundColor: '#565e66',
+        rowGap: height * 0.015
+    },
+    calorieText: {
+        fontSize: scale(24),
+        fontWeight: '500',
+    },
+    calorieTextInfo: {
+        color: '#ededed',
+        fontSize: scale(14),
+        fontWeight: '500'
     },
     middleBottomContent: {
         width: width * 0.55,
@@ -122,6 +132,10 @@ export const styles = StyleSheet.create({
         backgroundColor: '#495057',
         elevation: 2,
         borderRadius: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: width * 0.025
     },
 
 

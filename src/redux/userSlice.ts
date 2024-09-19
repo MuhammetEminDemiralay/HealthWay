@@ -24,7 +24,6 @@ export const setUser = createAsyncThunk("user/set", async (user: Onboarding, { g
 export const getUser = createAsyncThunk("user/get", async (_, { getState }) => {
     try {
         const state = getState() as RootState;
-
         const ref = doc(db, "user", `${state.auth.uid}`)
         const data = (await getDoc(ref)).data();
 
@@ -37,15 +36,11 @@ export const setDietCalculate = createAsyncThunk("set/dietCaklculate", async (_,
     try {
 
         const { onboarding } = getState() as RootState
-
-        console.log(onboarding.reasons);
-
-
-
     } catch (error) {
 
     }
 })
+
 
 
 
