@@ -350,7 +350,7 @@ const HomeScreen = () => {
                         iconRight={null}
                         iconLeftStyle={{ width: 0 }}
                         iconRightStyle={{ width: 0 }}
-                        dayComponent={({ dayContainerStyle, date }) => (
+                        dayComponent={({ date }) => (
                             <View style={[{ height: height * 0.15 }]}>
                                 <View style={styles.topBox}>
                                 </View>
