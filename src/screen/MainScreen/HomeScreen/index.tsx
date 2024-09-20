@@ -16,7 +16,7 @@ import { getFoodAsyncstorage, setActiveMealFoodCategory, setDailyRequiredCalorie
 import { DataModel } from '../../../model/activity'
 import { food } from '../../../datas/food'
 import { FoodItem } from '../../../model/food'
-
+import CalendarStrip from 'react-native-calendar-strip'
 
 const HomeScreen = () => {
 
@@ -31,6 +31,7 @@ const HomeScreen = () => {
     const [carbohydrate, setCarbohydrate] = useState(0)
     const [protein, setProtein] = useState(0)
     const [fat, setFat] = useState(0)
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
     useEffect(() => {
         dispatch(getUserInfoAsyncstorage())
@@ -42,9 +43,9 @@ const HomeScreen = () => {
 
     useEffect(() => {
         setCaloriesConsumed(productİnformation.reduce((acc, item) => acc + (item.energy.value != undefined ? item.energy.value : 0), 0))
-        setCarbohydrate(productİnformation.reduce((acc, item) => acc + (item.carbohydrate?.value != undefined ? item.carbohydrate.value : 0), 0))
-        setProtein(productİnformation.reduce((acc, item) => acc + (item.protein?.value != undefined ? item.protein.value : 0), 0))
-        setFat(productİnformation.reduce((acc, item) => acc + (item.totalFat?.value != undefined ? item.totalFat.value : 0), 0))
+        setCarbohydrate(productİnformation.reduce((acc, item) => acc + (item.carbohydrate?.value != undefined ? Math.floor(item.carbohydrate.value) : 0), 0))
+        setProtein(productİnformation.reduce((acc, item) => acc + (item.protein?.value != undefined ? Math.floor(item.protein.value) : 0), 0))
+        setFat(productİnformation.reduce((acc, item) => acc + (item.totalFat?.value != undefined ? Math.floor(item.totalFat.value) : 0), 0))
     }, [productİnformation])
 
     useEffect(() => {
@@ -54,6 +55,8 @@ const HomeScreen = () => {
             if (data != undefined) {
                 for (let i = 1; i <= item.amount; i++) {
                     setProductInformation((prev) => [...prev, data])
+                    console.log(data.totalFat);
+
                 }
             }
         })
@@ -162,37 +165,211 @@ const HomeScreen = () => {
             </View>
 
 
+            {/* CARBOHYDRATE */}
             <View style={styles.activityContainer}>
-                <View>
-                    <Progress.Bar
-                        progress={carbohydrate / (dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.carbohydrare ?
-                            dailyRequiredCalories.percentage.carbohydrare * dailyRequiredCalories.calorie : 1
-                        )}
-                        width={width * 0.25}
-                        color='lime'
-                    />
-                </View>
-                <View>
-                    <Progress.Bar
-                        progress={protein / (dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.protein ?
-                            dailyRequiredCalories.percentage.protein * dailyRequiredCalories.calorie : 1
-                        )}
-                        width={width * 0.25}
-                        color='lime'
-                    />
-                </View>
-                <View>
-                    <Progress.Bar
-                        progress={fat / (dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.fat ?
-                            dailyRequiredCalories.percentage.fat * dailyRequiredCalories.calorie : 1
-                        )}
-                        width={width * 0.25}
-                        color='lime'
-                    />
 
+                <View style={styles.progressBarContainer}>
+
+                    <View style={styles.progressBarBox}>
+                        <View style={styles.progressWeightBox}>
+                            <View style={styles.progressWeight}>
+                                <Text style={styles.progressText}>Carbs</Text>
+                            </View>
+                            <View style={styles.progressWeight}>
+                                <Text style={styles.progressText}>
+                                    {
+                                        dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.carbohydrate &&
+                                            carbohydrate > (Math.floor((dailyRequiredCalories.percentage.carbohydrate * dailyRequiredCalories.calorie) / 4)) ?
+                                            (Math.floor((dailyRequiredCalories.percentage.carbohydrate * dailyRequiredCalories.calorie) / 4)) :
+                                            carbohydrate
+                                    }g
+                                </Text>
+                                <Text style={styles.progressText}> / </Text>
+                                <Text style={styles.progressText}>
+                                    {
+                                        dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.carbohydrate &&
+                                        (Math.floor((dailyRequiredCalories.percentage.carbohydrate * dailyRequiredCalories.calorie) / 4))
+                                    }g
+                                </Text>
+                            </View>
+                        </View>
+                        <Progress.Bar
+                            borderWidth={0}
+                            height={height * 0.011}
+                            style={styles.progressBackground}
+                            progress={carbohydrate / (dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.carbohydrate ?
+                                (Math.floor((dailyRequiredCalories.percentage.carbohydrate * dailyRequiredCalories.calorie) / 4)) : 1
+                            )}
+                            width={width * 0.26}
+                            color={
+                                new Date(new Date().toDateString()) <= new Date(activeDate.toDateString()) ?
+                                    'lime' :
+                                    dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.carbohydrate &&
+                                        carbohydrate < (Math.floor((dailyRequiredCalories.percentage.carbohydrate * dailyRequiredCalories.calorie) / 4)) ?
+                                        'orange' :
+                                        'lime'
+                            }
+                        />
+                        <Text style={styles.progressText}>
+                            {
+                                dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.carbohydrate &&
+                                    carbohydrate > (Math.floor((dailyRequiredCalories.percentage.carbohydrate * dailyRequiredCalories.calorie) / 4)) ?
+                                    `extra ${carbohydrate - (Math.floor((dailyRequiredCalories.percentage.carbohydrate * dailyRequiredCalories.calorie) / 4))}g` :
+                                    `left ${dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.carbohydrate &&
+                                    (Math.floor((dailyRequiredCalories.percentage.carbohydrate * dailyRequiredCalories.calorie) / 4)) - carbohydrate}g`
+                            }
+                        </Text>
+                    </View>
+
+
+                    {/* PROTEİN */}
+                    <View style={styles.progressBarBox}>
+                        <View style={styles.progressWeightBox}>
+                            <View style={styles.progressWeight}>
+                                <Text style={styles.progressText}>Protein</Text>
+                            </View>
+                            <View style={styles.progressWeight}>
+                                <Text style={styles.progressText}>
+                                    {
+                                        dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.protein &&
+                                            protein > (Math.floor((dailyRequiredCalories.percentage.protein * dailyRequiredCalories.calorie) / 4)) ?
+                                            (Math.floor((dailyRequiredCalories.percentage.protein * dailyRequiredCalories.calorie) / 4)) :
+                                            protein
+                                    }g
+                                </Text>
+                                <Text style={styles.progressText}> / </Text >
+                                <Text style={styles.progressText}>
+                                    {
+                                        dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.protein &&
+                                        (Math.floor((dailyRequiredCalories.percentage.protein * dailyRequiredCalories.calorie) / 4))
+                                    }g
+                                </Text>
+                            </View>
+                        </View>
+                        <Progress.Bar
+                            borderWidth={0}
+                            height={height * 0.011}
+                            style={styles.progressBackground}
+                            progress={protein / (dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.protein ?
+                                (Math.floor((dailyRequiredCalories.percentage.protein * dailyRequiredCalories.calorie) / 4)) : 1
+                            )}
+                            width={width * 0.26}
+                            color={
+                                new Date(new Date().toDateString()) <= new Date(activeDate.toDateString()) ?
+                                    'lime' :
+                                    dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.protein &&
+                                        protein < (Math.floor((dailyRequiredCalories.percentage.protein * dailyRequiredCalories.calorie) / 4)) ?
+                                        'orange' :
+                                        'lime'
+                            }
+                        />
+                        <Text style={styles.progressText}>
+                            {
+                                dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.protein &&
+                                    protein > (Math.floor((dailyRequiredCalories.percentage.protein * dailyRequiredCalories.calorie) / 4)) ?
+                                    `extra ${protein - (Math.floor((dailyRequiredCalories.percentage.protein * dailyRequiredCalories.calorie) / 4))}g` :
+                                    `left ${dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.protein &&
+                                    (Math.floor((dailyRequiredCalories.percentage.protein * dailyRequiredCalories.calorie) / 4)) - protein}g`
+                            }
+                        </Text>
+                    </View>
+
+
+                    {/* FAT */}
+                    <View style={styles.progressBarBox}>
+                        <View style={styles.progressWeightBox}>
+                            <View style={styles.progressWeight}>
+                                <Text style={styles.progressText}>Fat</Text>
+                            </View>
+                            <View style={styles.progressWeight}>
+                                <Text style={styles.progressText}>
+                                    {
+                                        dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.fat &&
+                                            fat > (Math.floor((dailyRequiredCalories.percentage.fat * dailyRequiredCalories.calorie) / 9)) ?
+                                            (Math.floor((dailyRequiredCalories.percentage.fat * dailyRequiredCalories.calorie) / 9)) :
+                                            fat
+                                    }g
+                                </Text>
+                                <Text style={styles.progressText}> / </Text>
+                                <Text style={styles.progressText}>
+                                    {
+                                        dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.fat &&
+                                        (Math.floor((dailyRequiredCalories.percentage.fat * dailyRequiredCalories.calorie) / 9))
+                                    }g
+                                </Text>
+                            </View>
+                        </View>
+                        <Progress.Bar
+                            borderWidth={0}
+                            height={height * 0.011}
+                            style={styles.progressBackground}
+                            progress={fat / (dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.fat ?
+                                (Math.floor((dailyRequiredCalories.percentage.fat * dailyRequiredCalories.calorie) / 9)) : 1
+                            )}
+                            width={width * 0.26}
+                            color={
+                                new Date(new Date().toDateString()) <= new Date(activeDate.toDateString()) ?
+                                    'lime' :
+                                    dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.fat &&
+                                        fat < (Math.floor((dailyRequiredCalories.percentage.fat * dailyRequiredCalories.calorie) / 9)) ?
+                                        'orange' :
+                                        'lime'
+                            }
+                        />
+                        <Text style={styles.progressText}>
+                            {
+                                dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.fat &&
+                                    fat > (Math.floor((dailyRequiredCalories.percentage.fat * dailyRequiredCalories.calorie) / 9)) ?
+                                    `extra ${fat - (Math.floor((dailyRequiredCalories.percentage.fat * dailyRequiredCalories.calorie) / 9))}g` :
+                                    `left ${dailyRequiredCalories?.calorie && dailyRequiredCalories.percentage.fat &&
+                                    (Math.floor((dailyRequiredCalories.percentage.fat * dailyRequiredCalories.calorie) / 9)) - fat}`
+                            }
+                        </Text>
+                    </View>
+                </View>
+
+
+                <View style={styles.dailyProgressContainer}>
+
+                    <View style={styles.dailyValueBox}>
+
+                    </View>
+
+
+                    <CalendarStrip
+                        startingDate={new Date(new Date().setDate(new Date().getDate() - 1))}
+                        style={styles.headerCalendar}
+                        scrollable={true}
+                        selectedDate={activeDate}
+                        // onDateSelected={(date: moment.Moment) => dispatch(setActiveDate(date.toDate()))}
+                        numDaysInWeek={7}
+                        showMonth={false}
+                        calendarHeaderStyle={{ height: 0 }}
+                        useNativeDriver={true}
+                        iconLeft={null}
+                        iconRight={null}
+                        iconLeftStyle={{ width: 0 }}
+                        iconRightStyle={{ width: 0 }}
+                        dayComponent={({ dayContainerStyle, date }) => (
+                            <View style={[{ height: height * 0.15 }]}>
+                                <View style={styles.topBox}>
+                                </View>
+                                <Pressable
+                                    style={({ pressed }) => [
+                                        {
+                                            backgroundColor: pressed ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0)'
+                                        },
+                                        styles.bottomBox
+                                    ]}>
+                                    <Text style={{ color: '#fff' }}>{`${days[new Date(date.toISOString()).getDay()]}`}</Text>
+                                    <Text style={{ color: '#fff' }}>{`${new Date(date.toISOString()).getDate()}`}</Text>
+                                </Pressable>
+                            </View>
+                        )}
+                        dayComponentHeight={height * 0.15}
+                    />
                 </View>
             </View>
-
         </View >
     )
 }

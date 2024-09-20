@@ -78,7 +78,7 @@ const initialState: DailyCalorie = {
     dailyRequiredCalories: {
         calorie: null,
         percentage: {
-            carbohydrare: null,
+            carbohydrate: null,
             fat: null,
             protein: null
         }
@@ -95,6 +95,8 @@ const activitySlice = createSlice({
     reducers: {
         setDailyRequiredCalories: (state, action) => {
             state.dailyRequiredCalories = action.payload;
+            console.log("ULA",action.payload);
+
         },
         setCaloriesConsumed: (state, action) => {
             const available = state.foodsConsumed.find(item => item.foodName == action.payload)

@@ -33,29 +33,28 @@ export const styles = StyleSheet.create({
     },
     content: {
         width: width * 0.95,
-        height: height * 0.5,
+        height: height * 0.45,
         alignItems: 'center',
         justifyContent: 'center',
-        marginVertical: height * 0.015,
+        marginTop: height * 0.015,
         flexDirection: 'row',
-        backgroundColor: '#495057',
+        backgroundColor: 'black',
         elevation: 2,
-        borderRadius: 10
     },
     leftContent: {
         width: width * 0.2,
-        height: height * 0.5,
+        height: height * 0.45,
     },
     middleContent: {
         width: width * 0.55,
-        height: height * 0.5,
+        height: height * 0.45,
     },
     middleTopContent: {
         width: width * 0.55,
-        height: height * 0.125,
+        height: height * 0.1,
         alignItems: 'center',
         justifyContent: 'center',
-        rowGap: height * 0.005
+        rowGap: height * 0.005,
     },
     requiredCalorieText: {
         fontSize: scale(15),
@@ -85,6 +84,7 @@ export const styles = StyleSheet.create({
         height: height * 0.2,
         position: 'absolute',
         borderRadius: height * 0.1,
+
     },
     calorieScreen: {
         width: height * 0.2,
@@ -92,8 +92,10 @@ export const styles = StyleSheet.create({
         borderRadius: height * 0.1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#565e66',
-        rowGap: height * 0.015
+        backgroundColor: 'black',
+        rowGap: height * 0.015,
+        borderWidth: 1.5,
+        borderColor: '#fff'
     },
     calorieText: {
         fontSize: scale(24),
@@ -106,14 +108,15 @@ export const styles = StyleSheet.create({
     },
     middleBottomContent: {
         width: width * 0.55,
-        height: height * 0.125,
+        height: height * 0.1,
         alignItems: 'center',
         justifyContent: 'center',
-        rowGap: height * 0.01
+        flexDirection: 'row',
+        columnGap: height * 0.0375
     },
     middleBottomBtn: {
-        width: width * 0.5,
-        height: height * 0.045,
+        width: height * 0.075,
+        height: height * 0.075,
         borderWidth: 1,
         borderColor: '#fff',
         alignItems: 'center',
@@ -122,21 +125,90 @@ export const styles = StyleSheet.create({
     },
     rightContent: {
         width: width * 0.2,
-        height: height * 0.5,
+        height: height * 0.45,
     },
 
 
     activityContainer: {
         width: width * 0.95,
-        height: height * 0.16,
-        backgroundColor: '#495057',
+        height: height * 0.225,
+        backgroundColor: 'black',
         elevation: 2,
-        borderRadius: 10,
+    },
+    progressBarContainer: {
+        width: width * 0.95,
+        height: height * 0.075,
         flexDirection: 'row',
-        alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: width * 0.025
+        paddingHorizontal: width * 0.025,
+        alignItems: 'center',
+    },
+    progressBarBox: {
+        height: height * 0.075,
+        justifyContent: 'center',
+        rowGap: height * 0.004
+    },
+    progressWeightBox: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+
+    },
+    progressWeight: {
+        flexDirection: 'row',
+    },
+    progressText: {
+        fontSize: scale(10),
+        fontWeight: '500',
+        color: '#fff'
+    },
+    progressBackground: {
+        backgroundColor: '#adb5bd'
+    }
+
+
+    ,
+    dailyProgressContainer: {
+        width: width * 0.95,
+        height: height * 0.15,
+        borderWidth: 1,
+        borderColor: '#fff'
+    },
+    dailyValueBox: {
+
+    },
+    headerCalendar: {
+        width: width * 0.95,
+        height: height * 0.15,
+    },
+    dateName: {
+        color: '#fff'
+    },
+    dateNumber: {
+        color: '#fff'
+    },
+    dayContainer: {
+        borderRadius: 0
+    },
+    highlightDateContainer: {
+        backgroundColor: '#c5c3c6',
+        borderRadius: 10
+    },
+    highlightDateName: {
+        fontWeight: '700',
     },
 
-
+    topBox: {
+        width: '100%',
+        height: height * 0.1,
+        borderWidth: 1,
+        borderColor: '#fff'
+    },
+    bottomBox: {
+        width: '100%',
+        height: height * 0.05,
+        borderWidth: 1,
+        borderColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
 })

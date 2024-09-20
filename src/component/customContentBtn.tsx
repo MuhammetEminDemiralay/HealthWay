@@ -70,7 +70,7 @@ export default CustomContentBtn
 const styles = StyleSheet.create({
     btnContent: {
         width: width * 0.2,
-        height: height * 0.125,
+        height: (height * 0.45) / 4,
         alignItems: 'center',
         justifyContent: 'center',
     },
