@@ -12,8 +12,8 @@ import { useNavigation } from '@react-navigation/native'
 import { NavigationProps } from '../../../datas/navigationType'
 import CustomHeader from '../../../component/customHeader'
 import { bmr, calorieCalculation } from '../../../helper/calorieCalculation'
-import { getFoodAsyncstorage, setActiveMealFoodCategory, setDailyRequiredCalories } from '../../../redux/activitySlice'
-import { DataModel } from '../../../model/activity'
+import { getFoodAsyncstorage, setActiveDate, setActiveMealFoodCategory, setDailyRequiredCalories, setProductInformation } from '../../../redux/activitySlice'
+import { Content, DataModel } from '../../../model/activity'
 import { food } from '../../../datas/food'
 import { FoodItem } from '../../../model/food'
 import CalendarStrip from 'react-native-calendar-strip'
@@ -24,9 +24,8 @@ const HomeScreen = () => {
     const { user, uid }: Auth = useSelector((state: any) => state.auth)
     const { updateProfile } = useSelector((state: RootState) => state.onboarding);
     const { width, height } = Dimensions.get("window")
-    const { dailyRequiredCalories, activeDate, allDataOfTheDay } = useSelector((state: RootState) => state.activity)
+    const { dailyRequiredCalories, activeDate, allDataOfTheDay, productInformation } = useSelector((state: RootState) => state.activity)
     const navigation: any = useNavigation();
-    const [productİnformation, setProductInformation] = useState<FoodItem[]>([])
     const [caloriesConsumed, setCaloriesConsumed] = useState(0);
     const [carbohydrate, setCarbohydrate] = useState(0)
     const [protein, setProtein] = useState(0)
@@ -35,34 +34,33 @@ const HomeScreen = () => {
 
     useEffect(() => {
         dispatch(getUserInfoAsyncstorage())
+        dispatch(getFoodAsyncstorage())
     }, [])
 
-    useEffect(() => {
-        dispatch(getFoodAsyncstorage())
-    }, [activeDate])
 
     useEffect(() => {
-        setCaloriesConsumed(productİnformation.reduce((acc, item) => acc + (item.energy.value != undefined ? item.energy.value : 0), 0))
-        setCarbohydrate(productİnformation.reduce((acc, item) => acc + (item.carbohydrate?.value != undefined ? Math.floor(item.carbohydrate.value) : 0), 0))
-        setProtein(productİnformation.reduce((acc, item) => acc + (item.protein?.value != undefined ? Math.floor(item.protein.value) : 0), 0))
-        setFat(productİnformation.reduce((acc, item) => acc + (item.totalFat?.value != undefined ? Math.floor(item.totalFat.value) : 0), 0))
-    }, [productİnformation])
+        setCaloriesConsumed(productInformation.reduce((acc, item) => acc + (item.energy.value != undefined ? item.energy.value : 0), 0))
+        setCarbohydrate(productInformation.reduce((acc, item) => acc + (item.carbohydrate?.value != undefined ? Math.floor(item.carbohydrate.value) : 0), 0))
+        setProtein(productInformation.reduce((acc, item) => acc + (item.protein?.value != undefined ? Math.floor(item.protein.value) : 0), 0))
+        setFat(productInformation.reduce((acc, item) => acc + (item.totalFat?.value != undefined ? Math.floor(item.totalFat.value) : 0), 0))
+    }, [productInformation])
+
 
     useEffect(() => {
-        setProductInformation([])
-        allDataOfTheDay.forEach((item: DataModel) => {
-            const data = food.find((foodData: FoodItem) => foodData.foodName == item.foodName)
-            if (data != undefined) {
-                for (let i = 1; i <= item.amount; i++) {
-                    setProductInformation((prev) => [...prev, data])
-                    console.log(data.totalFat);
+        dispatch(setProductInformation(null))
 
+        const result = allDataOfTheDay.find((item: any) => item.date.toDateString() == activeDate.toDateString())
+        if (result != undefined) {
+            result.data.forEach((item: Content) => {
+                const data = food.find((foodData: FoodItem) => foodData.foodName == item.foodName)
+                if (data != undefined) {
+                    for (let i = 1; i <= item.amount; i++) {
+                        dispatch(setProductInformation(data))
+                    }
                 }
-            }
-        })
-
-
-    }, [allDataOfTheDay])
+            })
+        }
+    }, [activeDate, allDataOfTheDay])
 
 
     const navigate = (route: string) => {
@@ -333,15 +331,16 @@ const HomeScreen = () => {
 
                     <View style={styles.dailyValueBox}>
 
+
+
                     </View>
 
 
                     <CalendarStrip
-                        startingDate={new Date(new Date().setDate(new Date().getDate() - 1))}
+                        startingDate={new Date(new Date().setDate(new Date().getDate() - 3))}
                         style={styles.headerCalendar}
                         scrollable={true}
                         selectedDate={activeDate}
-                        // onDateSelected={(date: moment.Moment) => dispatch(setActiveDate(date.toDate()))}
                         numDaysInWeek={7}
                         showMonth={false}
                         calendarHeaderStyle={{ height: 0 }}
@@ -353,17 +352,36 @@ const HomeScreen = () => {
                         dayComponent={({ date }) => (
                             <View style={[{ height: height * 0.15 }]}>
                                 <View style={styles.topBox}>
+
                                 </View>
-                                <Pressable
-                                    style={({ pressed }) => [
-                                        {
-                                            backgroundColor: pressed ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0)'
-                                        },
-                                        styles.bottomBox
-                                    ]}>
-                                    <Text style={{ color: '#fff' }}>{`${days[new Date(date.toISOString()).getDay()]}`}</Text>
-                                    <Text style={{ color: '#fff' }}>{`${new Date(date.toISOString()).getDate()}`}</Text>
-                                </Pressable>
+
+
+                                <View style={styles.bottomBox}>
+                                    <Pressable
+                                        style={({ pressed }) => [
+                                            {
+                                                backgroundColor: pressed ? 'rgba(255,255,255,0.5)' :
+                                                    new Date(activeDate.toISOString()).toDateString() == new Date(date.toISOString()).toDateString() ?
+                                                        '#c5c3c6' :
+                                                        'rgba(255, 255,255,0.0)'
+
+                                            },
+                                            styles.btnBox
+                                        ]}
+                                        onPress={() => dispatch(setActiveDate(new Date(new Date(date.toISOString()).toDateString())))}
+                                    >
+                                        <Text style={{
+                                            color: new Date(activeDate.toISOString()).toDateString() == new Date(date.toISOString()).toDateString() ?
+                                                'black' : '#fff'
+
+                                        }}>{`${days[new Date(date.toISOString()).getDay()]}`}</Text>
+                                        <Text
+                                            style={{
+                                                color: new Date(activeDate.toISOString()).toDateString() == new Date(date.toISOString()).toDateString() ?
+                                                    'black' : '#fff'
+                                            }}>{`${new Date(date.toISOString()).getDate()}`}</Text>
+                                    </Pressable>
+                                </View>
                             </View>
                         )}
                         dayComponentHeight={height * 0.15}

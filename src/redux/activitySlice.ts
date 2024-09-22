@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Content, DailyCalorie, DataModel, Params } from "../model/activity";
 import { RootState } from "./store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -26,19 +26,19 @@ export const setFoodAsyncstorage = createAsyncThunk("set/foodAsyncstorage", asyn
             }
         }
 
-        if (allDataOfDay.find((item: DataModel) => item.foodName == foodName) == undefined) {
+        if (allDataOfDay.find((item: DataModel) => item.data.foodName == foodName) == undefined) {
             allDataOfDay.push(newData)
         } else {
-            if (allDataOfDay.find((item: DataModel) => item.mealTime == newData.mealTime) == undefined) {
+            if (allDataOfDay.find((item: DataModel) => item.data.mealTime == newData.mealTime) == undefined) {
                 allDataOfDay.push(newData)  //Meal control
             } else {
                 if (amountState == undefined) {
-                    const index = allDataOfDay.findIndex((item: DataModel) => item.foodName == foodName)
+                    const index = allDataOfDay.findIndex((item: DataModel) => item.data.foodName == foodName)
                     allDataOfDay.splice(index, 1)
                 } else {
                     const updatedData = allDataOfDay.map((item: DataModel) =>
-                        item.foodName == foodName && item.mealTime == newData.mealTime ?
-                            { ...item, amount: amountState == 'up' ? item.amount + 1 : amountState == 'down' && item.amount != 1 ? item.amount - 1 : item.amount }
+                        item.data.foodName == foodName && item.data.mealTime == newData.mealTime ?
+                            { ...item, amount: amountState == 'up' ? item.data.amount + 1 : amountState == 'down' && item.data.amount != 1 ? item.data.amount - 1 : item.data.amount }
                             : item
                     )
                     allDataOfDay = updatedData;
@@ -62,9 +62,17 @@ export const getFoodAsyncstorage = createAsyncThunk("get/foodAsyncstorage", asyn
 
         const result = await AsyncStorage.getItem(`${state.activity.activeDate.toDateString()}`)
 
-        return result != null ? JSON.parse(result) : []
+        const allKeys = await AsyncStorage.getAllKeys();
+        const filterKeys = allKeys.filter((item: string) => item != '_token' && item != '_uid' && item != '_user')
 
-
+        let datas: DataModel[] = []
+        for (let key of filterKeys) {
+            const data = await AsyncStorage.getItem(key)
+            if (data != null) {
+                datas.push({ date: new Date(key), data: JSON.parse(data) })
+            }
+        }
+        return datas
 
     } catch (error) {
         console.log(error);
@@ -85,8 +93,10 @@ const initialState: DailyCalorie = {
     },
     foodsConsumed: [],
     activeDate: new Date(),
+    activeData: null,
     activeMealFoodCategory: "",
-    allDataOfTheDay: []
+    allDataOfTheDay: [],
+    productInformation: []
 }
 
 const activitySlice = createSlice({
@@ -95,8 +105,6 @@ const activitySlice = createSlice({
     reducers: {
         setDailyRequiredCalories: (state, action) => {
             state.dailyRequiredCalories = action.payload;
-            console.log("ULA",action.payload);
-
         },
         setCaloriesConsumed: (state, action) => {
             const available = state.foodsConsumed.find(item => item.foodName == action.payload)
@@ -111,8 +119,87 @@ const activitySlice = createSlice({
         setActiveDate: (state, action) => {
             state.activeDate = action.payload;
         },
+        setActiveData: (state) => {
+            state.activeData = state.allDataOfTheDay.find((item: DataModel) => item.date?.toDateString() === state.activeDate.toDateString())
+        },
         setActiveMealFoodCategory: (state, action) => {
             state.activeMealFoodCategory = action.payload;
+        },
+        setFoodRedux: (state, action: PayloadAction<Params>) => {
+
+            const isDate = state.allDataOfTheDay.find((item: DataModel) => item.date?.toDateString() == state.activeDate.toDateString())
+
+            const newData = {
+                foodName: action.payload.foodName,
+                amount: 1,
+                day: new Date(),
+                mealTime: state.activeMealFoodCategory
+            }
+
+
+            if (isDate == undefined) {
+                state.allDataOfTheDay = [...state.allDataOfTheDay, { data: [newData], date: state.activeDate }]
+            } else {
+                const isFood = isDate.data.find((item: Content) => item.foodName == action.payload.foodName)
+                if (isFood == undefined) {
+                    state.allDataOfTheDay = state.allDataOfTheDay.map((item: DataModel) =>
+                        item.date?.toDateString() === state.activeDate.toDateString()
+                            ? { ...item, data: [...item.data, newData] }
+                            : item
+                    );
+                } else {
+
+                    if (action.payload.amountState == 'up') {
+                        state.allDataOfTheDay = state.allDataOfTheDay.map((item: DataModel) =>
+                            item.date?.toDateString() === state.activeDate.toDateString() ?
+                                {
+                                    ...item, data: item.data.map(((prev: Content) =>
+                                        prev.foodName === action.payload.foodName ? { ...prev, amount: prev.amount + 1 } : prev
+                                    ))
+                                } :
+                                item
+                        );
+                    } else if (action.payload.amountState == 'down') {
+
+                        if (isDate.data.find(item => item.foodName == action.payload.foodName)?.amount != 1) {
+                            state.allDataOfTheDay = state.allDataOfTheDay.map((item: DataModel) =>
+                                item.date?.toDateString() === state.activeDate.toDateString() ?
+                                    {
+                                        ...item, data: item.data.map(((prev: Content) =>
+                                            prev.foodName == action.payload.foodName ?
+                                                { ...prev, amount: prev.amount != 1 ? prev.amount - 1 : 0 } :
+                                                prev
+                                        ))
+                                    } :
+                                    item
+                            );
+                        } else {
+                            state.allDataOfTheDay = state.allDataOfTheDay.map((item: DataModel) =>
+                                item.date?.toDateString() == state.activeDate.toDateString() ?
+                                    { ...item, data: item.data.filter((data: Content) => data.foodName != action.payload.foodName) }
+                                    : item
+                            )
+                        }
+
+
+
+                    } else if (action.payload.amountState != 'up' && action.payload.amountState != 'down') {
+                        state.allDataOfTheDay = state.allDataOfTheDay.map((item: DataModel) =>
+                            item.date?.toDateString() == state.activeDate.toDateString() ?
+                                { ...item, data: item.data.filter((data: Content) => data.foodName != action.payload.foodName) }
+                                : item
+                        )
+                    }
+                }
+            }
+
+        },
+        setProductInformation: (state, action) => {
+            if (action.payload != null) {
+                state.productInformation = [...state.productInformation, action.payload]
+            } else {
+                state.productInformation = []
+            }
         }
     },
     extraReducers: (builder) => {
@@ -142,4 +229,4 @@ const activitySlice = createSlice({
 
 
 export default activitySlice.reducer
-export const { setDailyRequiredCalories, setCaloriesConsumed, setActiveDate, setActiveMealFoodCategory } = activitySlice.actions 
+export const { setDailyRequiredCalories, setCaloriesConsumed, setActiveDate, setActiveMealFoodCategory, setFoodRedux, setProductInformation, setActiveData } = activitySlice.actions 

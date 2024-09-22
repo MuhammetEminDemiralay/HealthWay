@@ -36,7 +36,6 @@ export const styles = StyleSheet.create({
         height: height * 0.45,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: height * 0.015,
         flexDirection: 'row',
         backgroundColor: 'black',
         elevation: 2,
@@ -131,7 +130,7 @@ export const styles = StyleSheet.create({
 
     activityContainer: {
         width: width * 0.95,
-        height: height * 0.225,
+        height: height * 0.23,
         backgroundColor: 'black',
         elevation: 2,
     },
@@ -170,8 +169,6 @@ export const styles = StyleSheet.create({
     dailyProgressContainer: {
         width: width * 0.95,
         height: height * 0.15,
-        borderWidth: 1,
-        borderColor: '#fff'
     },
     dailyValueBox: {
 
@@ -206,9 +203,14 @@ export const styles = StyleSheet.create({
     bottomBox: {
         width: '100%',
         height: height * 0.05,
-        borderWidth: 1,
-        borderColor: '#fff',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+    },
+    btnBox: {
+        width: '90%',
+        height: height * 0.05,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 5,
     }
 })
