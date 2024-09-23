@@ -16,38 +16,39 @@ export const setFoodAsyncstorage = createAsyncThunk("set/foodAsyncstorage", asyn
             day: state.activity.activeDate,
             mealTime: state.activity.activeMealFoodCategory
         }
-        let allDataOfDay: DataModel[] = []
+        let dataOfTheDay: Content[] = []
 
-        const isKey = (await AsyncStorage.getAllKeys()).find((item: string) => item == state.activity.activeDate.toDateString())
+        const isKey = (await AsyncStorage.getAllKeys()).find((date: string) => date == state.activity.activeDate.toDateString())
         if (isKey != undefined) {
             const datas = await AsyncStorage.getItem(`${state.activity.activeDate.toDateString()}`)
             if (datas != null) {
-                allDataOfDay = JSON.parse(datas)
+                dataOfTheDay = JSON.parse(datas)
             }
         }
 
-        if (allDataOfDay.find((item: DataModel) => item.data.foodName == foodName) == undefined) {
-            allDataOfDay.push(newData)
+
+        if (dataOfTheDay.find((item: Content) => item.foodName == foodName) == undefined) {
+            dataOfTheDay.push(newData)
         } else {
-            if (allDataOfDay.find((item: DataModel) => item.data.mealTime == newData.mealTime) == undefined) {
-                allDataOfDay.push(newData)  //Meal control
+            if (dataOfTheDay.find((item: Content) => item.mealTime == newData.mealTime) == undefined) {
+                dataOfTheDay.push(newData)  //Meal control
             } else {
                 if (amountState == undefined) {
-                    const index = allDataOfDay.findIndex((item: DataModel) => item.data.foodName == foodName)
-                    allDataOfDay.splice(index, 1)
+                    const index = dataOfTheDay.findIndex((item: Content) => item.foodName == foodName)
+                    dataOfTheDay.splice(index, 1)
                 } else {
-                    const updatedData = allDataOfDay.map((item: DataModel) =>
-                        item.data.foodName == foodName && item.data.mealTime == newData.mealTime ?
-                            { ...item, amount: amountState == 'up' ? item.data.amount + 1 : amountState == 'down' && item.data.amount != 1 ? item.data.amount - 1 : item.data.amount }
+                    const updatedData = dataOfTheDay.map((item: Content) =>
+                        item.foodName == foodName && item.mealTime == newData.mealTime ?
+                            { ...item, amount: amountState == 'up' ? item.amount + 1 : amountState == 'down' && item.amount != 1 ? item.amount - 1 : item.amount }
                             : item
                     )
-                    allDataOfDay = updatedData;
+                    dataOfTheDay = updatedData;
                 }
             }
         }
-        await AsyncStorage.setItem(`${state.activity.activeDate.toDateString()}`, JSON.stringify(allDataOfDay))
+        await AsyncStorage.setItem(`${state.activity.activeDate.toDateString()}`, JSON.stringify(dataOfTheDay))
 
-        return allDataOfDay
+        return dataOfTheDay
 
     } catch (error) {
         console.log(error);
@@ -72,6 +73,7 @@ export const getFoodAsyncstorage = createAsyncThunk("get/foodAsyncstorage", asyn
                 datas.push({ date: new Date(key), data: JSON.parse(data) })
             }
         }
+
         return datas
 
     } catch (error) {
@@ -95,7 +97,7 @@ const initialState: DailyCalorie = {
     activeDate: new Date(),
     activeData: null,
     activeMealFoodCategory: "",
-    allDataOfTheDay: [],
+    allDailyData: [],
     productInformation: []
 }
 
@@ -120,14 +122,14 @@ const activitySlice = createSlice({
             state.activeDate = action.payload;
         },
         setActiveData: (state) => {
-            state.activeData = state.allDataOfTheDay.find((item: DataModel) => item.date?.toDateString() === state.activeDate.toDateString())
+            state.activeData = state.allDailyData.find((item: DataModel) => item.date?.toDateString() === state.activeDate.toDateString())
         },
         setActiveMealFoodCategory: (state, action) => {
             state.activeMealFoodCategory = action.payload;
         },
         setFoodRedux: (state, action: PayloadAction<Params>) => {
 
-            const isDate = state.allDataOfTheDay.find((item: DataModel) => item.date?.toDateString() == state.activeDate.toDateString())
+            const isDate = state.allDailyData.find((item: DataModel) => item.date?.toDateString() == state.activeDate.toDateString())
 
             const newData = {
                 foodName: action.payload.foodName,
@@ -138,11 +140,11 @@ const activitySlice = createSlice({
 
 
             if (isDate == undefined) {
-                state.allDataOfTheDay = [...state.allDataOfTheDay, { data: [newData], date: state.activeDate }]
+                state.allDailyData = [...state.allDailyData, { data: [newData], date: state.activeDate }]
             } else {
                 const isFood = isDate.data.find((item: Content) => item.foodName == action.payload.foodName)
                 if (isFood == undefined) {
-                    state.allDataOfTheDay = state.allDataOfTheDay.map((item: DataModel) =>
+                    state.allDailyData = state.allDailyData.map((item: DataModel) =>
                         item.date?.toDateString() === state.activeDate.toDateString()
                             ? { ...item, data: [...item.data, newData] }
                             : item
@@ -150,7 +152,7 @@ const activitySlice = createSlice({
                 } else {
 
                     if (action.payload.amountState == 'up') {
-                        state.allDataOfTheDay = state.allDataOfTheDay.map((item: DataModel) =>
+                        state.allDailyData = state.allDailyData.map((item: DataModel) =>
                             item.date?.toDateString() === state.activeDate.toDateString() ?
                                 {
                                     ...item, data: item.data.map(((prev: Content) =>
@@ -162,7 +164,7 @@ const activitySlice = createSlice({
                     } else if (action.payload.amountState == 'down') {
 
                         if (isDate.data.find(item => item.foodName == action.payload.foodName)?.amount != 1) {
-                            state.allDataOfTheDay = state.allDataOfTheDay.map((item: DataModel) =>
+                            state.allDailyData = state.allDailyData.map((item: DataModel) =>
                                 item.date?.toDateString() === state.activeDate.toDateString() ?
                                     {
                                         ...item, data: item.data.map(((prev: Content) =>
@@ -174,7 +176,7 @@ const activitySlice = createSlice({
                                     item
                             );
                         } else {
-                            state.allDataOfTheDay = state.allDataOfTheDay.map((item: DataModel) =>
+                            state.allDailyData = state.allDailyData.map((item: DataModel) =>
                                 item.date?.toDateString() == state.activeDate.toDateString() ?
                                     { ...item, data: item.data.filter((data: Content) => data.foodName != action.payload.foodName) }
                                     : item
@@ -184,7 +186,7 @@ const activitySlice = createSlice({
 
 
                     } else if (action.payload.amountState != 'up' && action.payload.amountState != 'down') {
-                        state.allDataOfTheDay = state.allDataOfTheDay.map((item: DataModel) =>
+                        state.allDailyData = state.allDailyData.map((item: DataModel) =>
                             item.date?.toDateString() == state.activeDate.toDateString() ?
                                 { ...item, data: item.data.filter((data: Content) => data.foodName != action.payload.foodName) }
                                 : item
@@ -208,7 +210,7 @@ const activitySlice = createSlice({
 
             })
             .addCase(setFoodAsyncstorage.fulfilled, (state, action) => {
-                state.allDataOfTheDay = action.payload;
+
             })
             .addCase(setFoodAsyncstorage.rejected, (state, action) => {
 
@@ -218,7 +220,7 @@ const activitySlice = createSlice({
 
             })
             .addCase(getFoodAsyncstorage.fulfilled, (state, action) => {
-                state.allDataOfTheDay = action.payload;
+                state.allDailyData = action.payload;
             })
             .addCase(getFoodAsyncstorage.rejected, (state, action) => {
 

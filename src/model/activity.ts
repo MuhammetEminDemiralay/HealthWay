@@ -20,7 +20,7 @@ export interface DailyCalorie {
     activeDate: Date,
     activeData?: DataModel | null,
     activeMealFoodCategory: string,
-    allDataOfTheDay: DataModel[],
+    allDailyData: DataModel[],
     productInformation: FoodItem[]
 }
 

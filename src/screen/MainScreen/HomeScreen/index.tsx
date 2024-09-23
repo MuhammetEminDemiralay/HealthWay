@@ -24,7 +24,7 @@ const HomeScreen = () => {
     const { user, uid }: Auth = useSelector((state: any) => state.auth)
     const { updateProfile } = useSelector((state: RootState) => state.onboarding);
     const { width, height } = Dimensions.get("window")
-    const { dailyRequiredCalories, activeDate, allDataOfTheDay, productInformation } = useSelector((state: RootState) => state.activity)
+    const { dailyRequiredCalories, activeDate, allDailyData, productInformation } = useSelector((state: RootState) => state.activity)
     const navigation: any = useNavigation();
     const [caloriesConsumed, setCaloriesConsumed] = useState(0);
     const [carbohydrate, setCarbohydrate] = useState(0)
@@ -49,7 +49,7 @@ const HomeScreen = () => {
     useEffect(() => {
         dispatch(setProductInformation(null))
 
-        const result = allDataOfTheDay.find((item: any) => item.date.toDateString() == activeDate.toDateString())
+        const result = allDailyData.find((item: any) => item.date.toDateString() == activeDate.toDateString())
         if (result != undefined) {
             result.data.forEach((item: Content) => {
                 const data = food.find((foodData: FoodItem) => foodData.foodName == item.foodName)
@@ -60,7 +60,7 @@ const HomeScreen = () => {
                 }
             })
         }
-    }, [activeDate, allDataOfTheDay])
+    }, [activeDate, allDailyData])
 
 
     const navigate = (route: string) => {
@@ -70,6 +70,23 @@ const HomeScreen = () => {
         } else {
             navigation.navigate(route)
             dispatch(setActiveMealFoodCategory(route))
+        }
+    }
+
+
+    const calculateDailyEnergy = (date: moment.Duration) => {
+
+        const dailyData = allDailyData.find(item => item.date?.toDateString() === new Date(date.toISOString()).toDateString());
+        if (!dailyData) {
+            return 0;
+        } else {
+            const result = dailyData.data.reduce((accumulator, item) => {
+                const isFood = food.find((foodItem: FoodItem) => foodItem.foodName == item.foodName)
+
+                return accumulator + (isFood != undefined ? isFood.energy.value ? isFood.energy.value * item.amount : 0 : 0)
+            }, 0)
+
+            return result != undefined ? result : 0
         }
     }
 
@@ -326,16 +343,16 @@ const HomeScreen = () => {
                     </View>
                 </View>
 
+                {/* PERİOD */}
+                <View style={styles.dailyPeriodProgressContainer}>
 
-                <View style={styles.dailyProgressContainer}>
-
-                    <View style={styles.dailyValueBox}>
-
-
-
+                    <View style={styles.periodBorder}>
+                        {
+                            [...Array(15).fill(0)].map((item, index) => (
+                                <View key={index} style={styles.dashed}></View>
+                            ))
+                        }
                     </View>
-
-
                     <CalendarStrip
                         startingDate={new Date(new Date().setDate(new Date().getDate() - 3))}
                         style={styles.headerCalendar}
@@ -352,9 +369,32 @@ const HomeScreen = () => {
                         dayComponent={({ date }) => (
                             <View style={[{ height: height * 0.15 }]}>
                                 <View style={styles.topBox}>
+                                    {
+                                        calculateDailyEnergy(date) != 0 &&
+                                        <Pressable
+                                            style={
+                                                [
+                                                    {
+                                                        backgroundColor: new Date(new Date().toDateString()) <= new Date(new Date(date.toISOString()).toDateString()) ?
+                                                            'lime' :
+                                                            dailyRequiredCalories.calorie &&
+                                                                dailyRequiredCalories.calorie > calculateDailyEnergy(date) ?
+                                                                'red' :
+                                                                'lime'
+                                                        ,
+                                                        height:
+                                                            calculateDailyEnergy(date) /
+                                                            (dailyRequiredCalories.calorie ? (dailyRequiredCalories.calorie) / (height * 0.075) : 1)
+                                                    },
+                                                    styles.periodBtn
+                                                ]
+                                            }
+                                            onPress={() => dispatch(setActiveDate(new Date(new Date(date.toISOString()).toDateString())))}
+                                        >
 
+                                        </Pressable>
+                                    }
                                 </View>
-
 
                                 <View style={styles.bottomBox}>
                                     <Pressable

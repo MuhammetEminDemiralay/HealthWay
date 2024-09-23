@@ -166,12 +166,22 @@ export const styles = StyleSheet.create({
 
 
     ,
-    dailyProgressContainer: {
+    dailyPeriodProgressContainer: {
         width: width * 0.95,
         height: height * 0.15,
     },
-    dailyValueBox: {
-
+    periodBorder: {
+        width: width * 0.95,
+        height: 10,
+        position: 'absolute',
+        top: height * 0.025,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    dashed: {
+        width: (width * 0.95) / 29,
+        height: 1,
+        backgroundColor: 'gray'
     },
     headerCalendar: {
         width: width * 0.95,
@@ -197,8 +207,13 @@ export const styles = StyleSheet.create({
     topBox: {
         width: '100%',
         height: height * 0.1,
-        borderWidth: 1,
-        borderColor: '#fff'
+        alignItems: 'center'
+    },
+    periodBtn: {
+        width: '40%',
+        position: 'absolute',
+        bottom: 0,
+        borderBottomWidth: 2
     },
     bottomBox: {
         width: '100%',

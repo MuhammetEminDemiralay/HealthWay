@@ -18,7 +18,7 @@ const FoodScreen = () => {
     const [filterData, setFilterData] = useState<FoodItem[]>([]);
     const { width, height } = Dimensions.get("window");
     const dispatch = useDispatch<AppDispatch>();
-    const { foodsConsumed, activeDate, activeData, allDataOfTheDay, productInformation } = useSelector((state: RootState) => state.activity)
+    const { foodsConsumed, activeDate, activeData, allDailyData, productInformation } = useSelector((state: RootState) => state.activity)
 
     const onChangeText = (value: string) => {
         const filterDatas = food.filter(item => item?.foodName.toLowerCase().includes(value.toLowerCase()))
@@ -30,14 +30,13 @@ const FoodScreen = () => {
     const setFood = (item: Params) => {
         dispatch(setCaloriesConsumed(item.foodName))
         dispatch(setFoodRedux({ foodName: item.foodName, amountState: item.amountState }))
-        // dispatch(setFoodAsyncstorage({ foodName: item.foodName }))
+        dispatch(setFoodAsyncstorage({ foodName: item.foodName }))
     }
 
     useEffect(() => {
         dispatch(setActiveData());
-    }, [activeDate, allDataOfTheDay])
+    }, [activeDate, allDailyData])
 
-    console.log("activeData", activeData);
 
 
     return (
