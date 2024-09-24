@@ -7,7 +7,7 @@ export type NavigationType = {
     exercise?: { value: string },
     step?: { value: string },
     water?: { value: string },
-    notes?: { value: string }
+    notes?: { value: string },
 }
 
 export type NavigationProps = NativeStackNavigationProp<NavigationType>;

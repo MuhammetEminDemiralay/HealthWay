@@ -21,7 +21,8 @@ export interface DailyCalorie {
     activeData?: DataModel | null,
     activeMealFoodCategory: string,
     allDailyData: DataModel[],
-    productInformation: FoodItem[]
+    productInformation: FoodItem[],
+    exercise?: Exercise[]
 }
 
 export interface DataModel {
@@ -32,4 +33,16 @@ export interface DataModel {
 export interface Params {
     foodName: string,
     amountState?: string
+}
+
+export interface Exercise {
+    exerciseName: string,
+    time: number,
+    options: ExerciseOptions[],
+    description: string
+}
+
+export interface ExerciseOptions {
+    name: string,
+    calorie: number
 }

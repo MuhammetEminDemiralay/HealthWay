@@ -4,6 +4,21 @@ import { scale } from 'react-native-size-matters'
 
 const { width, height } = Dimensions.get("window")
 
+interface CustomBtnProps {
+  btnWidth?: number,
+  btnHeight?: number,
+  borderRadius?: number,
+  borderWidth?: number,
+  borderColor?: string,
+  backgroundColor?: string,
+  elevation?: number,
+  fontSize?: number,
+  color?: string,
+  text?: string,
+  fontWeight?: string | number,
+  onPress?: () => void
+}
+
 const CustomBtn = ({
   btnWidth = 0.9,
   btnHeight = 0.075,
@@ -15,9 +30,8 @@ const CustomBtn = ({
   fontSize = 16,
   color = "#fff",
   text,
-  fontWeight = "500",
   onPress
-}: any) => {
+}: CustomBtnProps) => {
 
 
   return (
@@ -41,7 +55,6 @@ const CustomBtn = ({
           {
             fontSize: scale(fontSize),
             color: color,
-            fontWeight: fontWeight
           },
           styles.btnText
         ]}

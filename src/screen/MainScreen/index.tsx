@@ -2,10 +2,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React from 'react'
 import HomeScreen from './HomeScreen';
 import FoodScreen from './FoodScreen';
-import ExerciseScreen from './ExerciseScreen';
 import StepScreen from './StepScreen';
 import WaterScreen from './WaterScreen';
 import NotesScreen from './NotesScreen';
+import ExerciseScreen from './ExerciseScreen';
 
 
 
