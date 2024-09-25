@@ -34,25 +34,53 @@ export const styles = StyleSheet.create({
     optionBox: {
         width: width * 0.9,
         height: height * 0.07,
-        borderWidth: 1,
-        borderColor: '#fff',
         flexDirection: 'row',
         marginBottom: height * 0.01,
-        borderRadius: 5
+        borderRadius: 5,
+        borderBottomWidth: 1,
+        borderBottomColor: '#fff',
     },
     optionLeftBox: {
-        width: width * 0.6,
+        width: width * 0.55,
         height: height * 0.07,
-        borderWidth: 1,
-        borderColor: '#fff',
         justifyContent: 'center',
         paddingHorizontal: width * 0.025
     },
     optionRightBox: {
-        width: width * 0.3,
+        width: width * 0.35,
         height: height * 0.07,
-        borderWidth: 1,
-        borderColor: '#fff'
+        flexDirection: 'row',
+    },
+    exerciseDuration: {
+        width: width * 0.2,
+        height: height * 0.07,
+        borderColor: '#fff',
+        justifyContent: 'center',
+    },
+    timeTextInput: {
+        width: width * 0.2,
+        height: height * 0.03,
+        textAlign: "center",
+        textAlignVertical: 'center',
+        color: '#4cc9f0',
+    },
+    calorieBox: {
+        width: width * 0.2,
+        height: height * 0.03,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    calorieText: {
+        color: 'lime',
+        fontSize: scale(10)
+    },
+    openExerciseBtn: {
+        width: width * 0.15,
+        height: height * 0.07,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#fff',
     },
     optionName: {
         color: '#fff',

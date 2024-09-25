@@ -1,10 +1,11 @@
 import { FoodItem } from "./food"
 
 export interface Content {
-    foodName: string,
+    foodName?: string
     amount: number,
     day: Date,
-    mealTime: string
+    mealTime: string,
+    exercise?: Exercise[] | null
 }
 
 export interface DailyCalorie {
@@ -28,21 +29,36 @@ export interface DailyCalorie {
 export interface DataModel {
     data: Content[],
     date?: Date
+    exercise?: Exercise[],
 }
 
 export interface Params {
-    foodName: string,
+    food?: FoodParams,
+    exercise?: ExerciseParams,
+    subject: string
+}
+
+export interface FoodParams {
+    foodName: string | undefined,
     amountState?: string
 }
 
-export interface Exercise {
-    exerciseName: string,
-    time: number,
-    options: ExerciseOptions[],
-    description: string
+export interface ExerciseParams {
+    exerciseName: string | undefined,
+    time?: number | undefined,
+    options?: string | undefined,
 }
 
+export interface Exercise {
+    exerciseName: string | undefined,
+    time?: number | undefined,
+    options?: ExerciseOptions[] | undefined,
+    description?: string
+}
+
+
+
 export interface ExerciseOptions {
-    name: string,
-    calorie: number
+    optionName: string,
+    calorie?: number
 }

@@ -9,7 +9,7 @@ import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../redux/store';
 import { DailyCalorie, DataModel, Params } from '../../../model/activity';
-import { getFoodAsyncstorage, setActiveData, setCaloriesConsumed, setFoodAsyncstorage, setFoodRedux } from '../../../redux/activitySlice';
+import { getFoodAsyncstorage, setActiveData, setCaloriesConsumed, setAsyncstorage, setFoodRedux } from '../../../redux/activitySlice';
 
 
 
@@ -28,9 +28,9 @@ const FoodScreen = () => {
     }
 
     const setFood = (item: Params) => {
-        dispatch(setCaloriesConsumed(item.foodName))
-        dispatch(setFoodRedux({ foodName: item.foodName, amountState: item.amountState }))
-        dispatch(setFoodAsyncstorage({ foodName: item.foodName }))
+        dispatch(setCaloriesConsumed(item.food?.foodName))
+        dispatch(setFoodRedux({ food: { foodName: item.food?.foodName, amountState: item.food?.amountState }, subject: item.subject }))
+        dispatch(setAsyncstorage({ food: { foodName: item.food?.foodName }, subject: 'food' }))
     }
 
     useEffect(() => {
@@ -89,7 +89,7 @@ const FoodScreen = () => {
                                         },
                                         styles.amountBtnBox
                                     ]}
-                                        onPress={() => setFood({ foodName: item.foodName, amountState: 'up' })}
+                                        onPress={() => setFood({ food: { foodName: item.foodName, amountState: 'up' }, subject: 'food' })}
                                     >
                                         <Entypo name="chevron-up" size={24} color="#fff" />
                                     </Pressable>
@@ -99,7 +99,7 @@ const FoodScreen = () => {
                                         },
                                         styles.amountBtnBox
                                     ]}
-                                        onPress={() => setFood({ foodName: item.foodName, amountState: 'down' })}
+                                        onPress={() => setFood({ food: { foodName: item.foodName, amountState: 'down' }, subject: 'food' })}
                                     >
                                         <Entypo name="chevron-down" size={24} color="#fff" />
                                     </Pressable>
@@ -112,7 +112,7 @@ const FoodScreen = () => {
                                     },
                                     styles.checkBox
                                 ]}
-                                onPress={() => setFood(item)}
+                                onPress={() => setFood({ food: { foodName: item.foodName }, subject: 'food' })}
                             >
                                 {
                                     activeData?.data.find(foodItem => foodItem.foodName == item.foodName) &&

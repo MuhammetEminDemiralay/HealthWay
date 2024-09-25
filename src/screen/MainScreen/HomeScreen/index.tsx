@@ -90,7 +90,8 @@ const HomeScreen = () => {
         }
     }
 
-
+    console.log(allDailyData);
+    
 
     return (
         <View style={styles.container} >

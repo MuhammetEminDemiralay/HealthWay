@@ -1,52 +1,103 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Content, DailyCalorie, DataModel, Params } from "../model/activity";
+import { Content, DailyCalorie, DataModel, Exercise, ExerciseParams, Params } from "../model/activity";
 import { RootState } from "./store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { exercise } from "../datas/exercise";
 
 
 
-export const setFoodAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({ foodName, amountState }: Params, { getState }) => {
+export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({ food, exercise, subject }: Params, { getState }) => {
     try {
+        console.log(exercise);
 
         const state: RootState = getState() as RootState
 
-        const newData = {
-            foodName: foodName,
+        const newFoodData: Content = {
+            foodName: food?.foodName,
             amount: 1,
             day: state.activity.activeDate,
-            mealTime: state.activity.activeMealFoodCategory
+            mealTime: state.activity.activeMealFoodCategory,
         }
+
+        const newExerciseData: ExerciseParams = {
+            exerciseName: exercise?.exerciseName,
+            time: exercise?.time != null ? exercise?.time : 30,
+            options: exercise?.options
+        }
+
+        console.log("newExerciseData", newExerciseData);
+        console.log("subject", subject);
+
+
+
+        let exerciseOfTheDay: ExerciseParams[] = []
         let dataOfTheDay: Content[] = []
 
         const isKey = (await AsyncStorage.getAllKeys()).find((date: string) => date == state.activity.activeDate.toDateString())
         if (isKey != undefined) {
             const datas = await AsyncStorage.getItem(`${state.activity.activeDate.toDateString()}`)
             if (datas != null) {
-                dataOfTheDay = JSON.parse(datas)
+                const parseData = JSON.parse(datas);
+                dataOfTheDay = parseData.data;
+                exerciseOfTheDay = parseData.exercise;
             }
         }
 
+        console.log("Exercise", exerciseOfTheDay);
 
-        if (dataOfTheDay.find((item: Content) => item.foodName == foodName) == undefined) {
-            dataOfTheDay.push(newData)
-        } else {
-            if (dataOfTheDay.find((item: Content) => item.mealTime == newData.mealTime) == undefined) {
-                dataOfTheDay.push(newData)  //Meal control
+
+        // FOOD
+        if (subject == 'food') {
+            if (dataOfTheDay.find((item: Content) => item.foodName == food?.foodName) == undefined) {
+                dataOfTheDay.push(newFoodData)
             } else {
-                if (amountState == undefined) {
-                    const index = dataOfTheDay.findIndex((item: Content) => item.foodName == foodName)
-                    dataOfTheDay.splice(index, 1)
+                if (dataOfTheDay.find((item: Content) => item.mealTime == newFoodData.mealTime) == undefined) {
+                    dataOfTheDay.push(newFoodData)  //Meal control
                 } else {
-                    const updatedData = dataOfTheDay.map((item: Content) =>
-                        item.foodName == foodName && item.mealTime == newData.mealTime ?
-                            { ...item, amount: amountState == 'up' ? item.amount + 1 : amountState == 'down' && item.amount != 1 ? item.amount - 1 : item.amount }
-                            : item
-                    )
-                    dataOfTheDay = updatedData;
+                    if (food?.foodName == undefined) {
+                        const index = dataOfTheDay.findIndex((item: Content) => item.foodName == food?.foodName)
+                        dataOfTheDay.splice(index, 1)
+                    } else {
+                        const updatedData = dataOfTheDay.map((item: Content) =>
+                            item.foodName == food.foodName && item.mealTime == newFoodData.mealTime ?
+                                { ...item, amount: food.amountState == 'up' ? item.amount + 1 : food.amountState == 'down' && item.amount != 1 ? item.amount - 1 : item.amount }
+                                : item
+                        )
+                        dataOfTheDay = updatedData;
+                    }
                 }
             }
         }
-        await AsyncStorage.setItem(`${state.activity.activeDate.toDateString()}`, JSON.stringify(dataOfTheDay))
+        //Exercise
+        else if (subject == 'exercise') {
+            console.log("Girdi");
+
+            console.log("isExercise", exerciseOfTheDay);
+
+            const isExercise = exerciseOfTheDay.filter(({ exerciseName }) => exerciseName == exercise?.exerciseName)
+
+            if (isExercise === undefined) {
+                console.log("Hop");
+                
+                exerciseOfTheDay.push(newExerciseData)
+            } else {
+                const isExerciseOption = isExercise.find(({ options }) => options == newExerciseData.options)
+                if (isExerciseOption == undefined) {
+                    exerciseOfTheDay.push(newExerciseData)
+                } else {
+                    if (isExerciseOption.time == newExerciseData.time) {
+                        exerciseOfTheDay = exerciseOfTheDay.filter(({ exerciseName }) => exerciseName != isExerciseOption.exerciseName)
+                    } else {
+                        exerciseOfTheDay = exerciseOfTheDay.map((item: ExerciseParams) =>
+                            item.exerciseName == exercise?.exerciseName && item.options == exercise?.options ? { ...item, time: newExerciseData.time } : item
+                        )
+                    }
+                }
+            }
+        }
+
+
+        await AsyncStorage.setItem(`${state.activity.activeDate.toDateString()}`, JSON.stringify({ data: dataOfTheDay, exercise: exerciseOfTheDay }))
 
         return dataOfTheDay
 
@@ -61,8 +112,6 @@ export const getFoodAsyncstorage = createAsyncThunk("get/foodAsyncstorage", asyn
 
         const state: RootState = getState() as RootState
 
-        const result = await AsyncStorage.getItem(`${state.activity.activeDate.toDateString()}`)
-
         const allKeys = await AsyncStorage.getAllKeys();
         const filterKeys = allKeys.filter((item: string) => item != '_token' && item != '_uid' && item != '_user')
 
@@ -73,6 +122,10 @@ export const getFoodAsyncstorage = createAsyncThunk("get/foodAsyncstorage", asyn
                 datas.push({ date: new Date(key), data: JSON.parse(data) })
             }
         }
+
+        console.log(datas);
+
+
 
         return datas
 
@@ -131,69 +184,81 @@ const activitySlice = createSlice({
 
             const isDate = state.allDailyData.find((item: DataModel) => item.date?.toDateString() == state.activeDate.toDateString())
 
-            const newData = {
-                foodName: action.payload.foodName,
+            const newFoodData: Content = {
+                foodName: action.payload.food?.foodName,
                 amount: 1,
                 day: new Date(),
                 mealTime: state.activeMealFoodCategory
             }
 
-
-            if (isDate == undefined) {
-                state.allDailyData = [...state.allDailyData, { data: [newData], date: state.activeDate }]
-            } else {
-                const isFood = isDate.data.find((item: Content) => item.foodName == action.payload.foodName)
-                if (isFood == undefined) {
-                    state.allDailyData = state.allDailyData.map((item: DataModel) =>
-                        item.date?.toDateString() === state.activeDate.toDateString()
-                            ? { ...item, data: [...item.data, newData] }
-                            : item
-                    );
-                } else {
-
-                    if (action.payload.amountState == 'up') {
-                        state.allDailyData = state.allDailyData.map((item: DataModel) =>
-                            item.date?.toDateString() === state.activeDate.toDateString() ?
-                                {
-                                    ...item, data: item.data.map(((prev: Content) =>
-                                        prev.foodName === action.payload.foodName ? { ...prev, amount: prev.amount + 1 } : prev
-                                    ))
-                                } :
-                                item
-                        );
-                    } else if (action.payload.amountState == 'down') {
-
-                        if (isDate.data.find(item => item.foodName == action.payload.foodName)?.amount != 1) {
-                            state.allDailyData = state.allDailyData.map((item: DataModel) =>
-                                item.date?.toDateString() === state.activeDate.toDateString() ?
-                                    {
-                                        ...item, data: item.data.map(((prev: Content) =>
-                                            prev.foodName == action.payload.foodName ?
-                                                { ...prev, amount: prev.amount != 1 ? prev.amount - 1 : 0 } :
-                                                prev
-                                        ))
-                                    } :
-                                    item
-                            );
-                        } else {
-                            state.allDailyData = state.allDailyData.map((item: DataModel) =>
-                                item.date?.toDateString() == state.activeDate.toDateString() ?
-                                    { ...item, data: item.data.filter((data: Content) => data.foodName != action.payload.foodName) }
-                                    : item
-                            )
-                        }
-
-
-
-                    } else if (action.payload.amountState != 'up' && action.payload.amountState != 'down') {
-                        state.allDailyData = state.allDailyData.map((item: DataModel) =>
-                            item.date?.toDateString() == state.activeDate.toDateString() ?
-                                { ...item, data: item.data.filter((data: Content) => data.foodName != action.payload.foodName) }
-                                : item
-                        )
-                    }
-                }
+            const newExerciseData: ExerciseParams = {
+                exerciseName: action.payload.exercise?.exerciseName,
+                time: 30,
+                options: action.payload.exercise?.options
             }
+
+            // FOOD
+            // if (action.payload.subject == 'food') {
+            //     if (isDate == undefined) {
+            //         state.allDailyData = [...state.allDailyData, { data: [newFoodData], date: state.activeDate }]
+            //     } else {
+            //         const isFood = isDate.data.find((item: Content) => item.foodName == action.payload.food?.foodName)
+            //         if (isFood == undefined) {
+            //             state.allDailyData = state.allDailyData.map((item: DataModel) =>
+            //                 item.date?.toDateString() === state.activeDate.toDateString()
+            //                     ? { ...item, data: [...item.data, newFoodData] }
+            //                     : item
+            //             );
+            //         } else {
+
+            //             if (action.payload.food?.amountState == 'up') {
+            //                 state.allDailyData = state.allDailyData.map((item: DataModel) =>
+            //                     item.date?.toDateString() === state.activeDate.toDateString() ?
+            //                         {
+            //                             ...item, data: item.data.map(((prev: Content) =>
+            //                                 prev.foodName === action.payload.food?.foodName ? { ...prev, amount: prev.amount + 1 } : prev
+            //                             ))
+            //                         } :
+            //                         item
+            //                 );
+            //             } else if (action.payload.food?.amountState == 'down') {
+
+            //                 if (isDate.data.find(item => item.foodName == action.payload.food?.foodName)?.amount != 1) {
+            //                     state.allDailyData = state.allDailyData.map((item: DataModel) =>
+            //                         item.date?.toDateString() === state.activeDate.toDateString() ?
+            //                             {
+            //                                 ...item, data: item.data.map(((prev: Content) =>
+            //                                     prev.foodName == action.payload.food?.foodName ?
+            //                                         { ...prev, amount: prev.amount != 1 ? prev.amount - 1 : 0 } :
+            //                                         prev
+            //                                 ))
+            //                             } :
+            //                             item
+            //                     );
+            //                 } else {
+            //                     state.allDailyData = state.allDailyData.map((item: DataModel) =>
+            //                         item.date?.toDateString() == state.activeDate.toDateString() ?
+            //                             { ...item, data: item.data.filter((data: Content) => data.foodName != action.payload.food?.foodName) }
+            //                             : item
+            //                     )
+            //                 }
+            //             } else if (action.payload.food?.amountState != 'up' && action.payload.food?.amountState != 'down') {
+            //                 state.allDailyData = state.allDailyData.map((item: DataModel) =>
+            //                     item.date?.toDateString() == state.activeDate.toDateString() ?
+            //                         { ...item, data: item.data.filter((data: Content) => data.foodName != action.payload.food?.foodName) }
+            //                         : item
+            //                 )
+            //             }
+            //         }
+            //     }
+            // }
+
+            // // EXERCİSE
+            // else if (action.payload.subject == 'exercise') {
+
+
+
+            // }
 
         },
         setProductInformation: (state, action) => {
@@ -206,13 +271,13 @@ const activitySlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(setFoodAsyncstorage.pending, (state, action) => {
+            .addCase(setAsyncstorage.pending, (state, action) => {
 
             })
-            .addCase(setFoodAsyncstorage.fulfilled, (state, action) => {
+            .addCase(setAsyncstorage.fulfilled, (state, action) => {
 
             })
-            .addCase(setFoodAsyncstorage.rejected, (state, action) => {
+            .addCase(setAsyncstorage.rejected, (state, action) => {
 
             })
 
@@ -220,7 +285,6 @@ const activitySlice = createSlice({
 
             })
             .addCase(getFoodAsyncstorage.fulfilled, (state, action) => {
-                state.allDailyData = action.payload;
             })
             .addCase(getFoodAsyncstorage.rejected, (state, action) => {
 
