@@ -27,7 +27,6 @@ const GenderScreen = () => {
     const flatlistRef = useRef<any>()
     const contentOnViewRef = useRef((viewableItems: any) => {
         if (viewableItems?.changed?.length > 2) {
-            console.log(viewableItems?.changed[2]?.item);
             setAge(viewableItems?.changed[2]?.item)
         }
     });

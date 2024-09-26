@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native'
 import { NavigationProps } from '../../../datas/navigationType'
 import CustomHeader from '../../../component/customHeader'
 import { bmr, calorieCalculation } from '../../../helper/calorieCalculation'
-import { getFoodAsyncstorage, setActiveDate, setActiveMealFoodCategory, setDailyRequiredCalories, setProductInformation } from '../../../redux/activitySlice'
+import { getAsyncstorage, setActiveDate, setActiveMealFoodCategory, setDailyRequiredCalories, setProductInformation } from '../../../redux/activitySlice'
 import { Content, DataModel } from '../../../model/activity'
 import { food } from '../../../datas/food'
 import { FoodItem } from '../../../model/food'
@@ -24,7 +24,7 @@ const HomeScreen = () => {
     const { user, uid }: Auth = useSelector((state: any) => state.auth)
     const { updateProfile } = useSelector((state: RootState) => state.onboarding);
     const { width, height } = Dimensions.get("window")
-    const { dailyRequiredCalories, activeDate, allDailyData, productInformation } = useSelector((state: RootState) => state.activity)
+    const { dailyRequiredCalories, activeDate, allDailyFoodData, allDailyExerciseData, productInformation } = useSelector((state: RootState) => state.activity)
     const navigation: any = useNavigation();
     const [caloriesConsumed, setCaloriesConsumed] = useState(0);
     const [carbohydrate, setCarbohydrate] = useState(0)
@@ -34,7 +34,7 @@ const HomeScreen = () => {
 
     useEffect(() => {
         dispatch(getUserInfoAsyncstorage())
-        dispatch(getFoodAsyncstorage())
+        dispatch(getAsyncstorage())
     }, [])
 
 
@@ -49,7 +49,7 @@ const HomeScreen = () => {
     useEffect(() => {
         dispatch(setProductInformation(null))
 
-        const result = allDailyData.find((item: any) => item.date.toDateString() == activeDate.toDateString())
+        const result = allDailyFoodData.find((item: any) => item.date.toDateString() == activeDate.toDateString())
         if (result != undefined) {
             result.data.forEach((item: Content) => {
                 const data = food.find((foodData: FoodItem) => foodData.foodName == item.foodName)
@@ -60,7 +60,7 @@ const HomeScreen = () => {
                 }
             })
         }
-    }, [activeDate, allDailyData])
+    }, [activeDate, allDailyFoodData])
 
 
     const navigate = (route: string) => {
@@ -76,7 +76,7 @@ const HomeScreen = () => {
 
     const calculateDailyEnergy = (date: moment.Duration) => {
 
-        const dailyData = allDailyData.find(item => item.date?.toDateString() === new Date(date.toISOString()).toDateString());
+        const dailyData = allDailyFoodData.find(item => item.date?.toDateString() === new Date(date.toISOString()).toDateString());
         if (!dailyData) {
             return 0;
         } else {
@@ -90,8 +90,7 @@ const HomeScreen = () => {
         }
     }
 
-    console.log(allDailyData);
-    
+
 
     return (
         <View style={styles.container} >

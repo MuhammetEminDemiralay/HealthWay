@@ -72,8 +72,6 @@ const onboardingSlice = createSlice({
         },
         setGenderAge: (state, action) => {
             state.genderAge = action.payload;
-            console.log(action.payload);
-
         },
         setHeightWeight: (state, action) => {
             state.heightWeight = action.payload;

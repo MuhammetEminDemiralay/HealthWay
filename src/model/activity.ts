@@ -5,7 +5,6 @@ export interface Content {
     amount: number,
     day: Date,
     mealTime: string,
-    exercise?: Exercise[] | null
 }
 
 export interface DailyCalorie {
@@ -19,17 +18,28 @@ export interface DailyCalorie {
     },
     foodsConsumed: Content[]
     activeDate: Date,
-    activeData?: DataModel | null,
+    activeData?: FoodDataModel | null,
     activeMealFoodCategory: string,
-    allDailyData: DataModel[],
+    allDailyFoodData: FoodDataModel[],
+    allDailyExerciseData: ExerciseDataModel[]
     productInformation: FoodItem[],
     exercise?: Exercise[]
 }
 
 export interface DataModel {
-    data: Content[],
-    date?: Date
+    data?: Content[],
+    date: Date
     exercise?: Exercise[],
+}
+
+export interface FoodDataModel {
+    data: Content[],
+    date: Date
+}
+
+export interface ExerciseDataModel {
+    exercise: ExerciseParams[],
+    date: Date
 }
 
 export interface Params {
@@ -55,8 +65,6 @@ export interface Exercise {
     options?: ExerciseOptions[] | undefined,
     description?: string
 }
-
-
 
 export interface ExerciseOptions {
     optionName: string,

@@ -85,8 +85,6 @@ const BALScreen = () => {
         }
     }
 
-    console.log(bal);
-
 
     return (
         <View style={styles.container}>

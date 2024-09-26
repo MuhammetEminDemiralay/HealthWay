@@ -27,8 +27,6 @@ const WeeklyTargetScreen = () => {
         }
     }
 
-    console.log(weeklyTarget);
-    
 
     return (
         <View style={mainStyles.container}>

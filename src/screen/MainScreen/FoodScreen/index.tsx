@@ -9,7 +9,7 @@ import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../redux/store';
 import { DailyCalorie, DataModel, Params } from '../../../model/activity';
-import { getFoodAsyncstorage, setActiveData, setCaloriesConsumed, setAsyncstorage, setFoodRedux } from '../../../redux/activitySlice';
+import { getAsyncstorage, setActiveData, setCaloriesConsumed, setAsyncstorage, setFoodRedux } from '../../../redux/activitySlice';
 
 
 
@@ -18,7 +18,7 @@ const FoodScreen = () => {
     const [filterData, setFilterData] = useState<FoodItem[]>([]);
     const { width, height } = Dimensions.get("window");
     const dispatch = useDispatch<AppDispatch>();
-    const { foodsConsumed, activeDate, activeData, allDailyData, productInformation } = useSelector((state: RootState) => state.activity)
+    const { foodsConsumed, activeDate, activeData, allDailyFoodData, productInformation } = useSelector((state: RootState) => state.activity)
 
     const onChangeText = (value: string) => {
         const filterDatas = food.filter(item => item?.foodName.toLowerCase().includes(value.toLowerCase()))
@@ -29,13 +29,13 @@ const FoodScreen = () => {
 
     const setFood = (item: Params) => {
         dispatch(setCaloriesConsumed(item.food?.foodName))
-        dispatch(setFoodRedux({ food: { foodName: item.food?.foodName, amountState: item.food?.amountState }, subject: item.subject }))
-        dispatch(setAsyncstorage({ food: { foodName: item.food?.foodName }, subject: 'food' }))
+        dispatch(setFoodRedux({ foodName: item.food?.foodName, amountState: item.food?.amountState }))
+        dispatch(setAsyncstorage({ food: { foodName: item.food?.foodName, amountState: item.food?.amountState }, subject: 'food' }))
     }
 
     useEffect(() => {
         dispatch(setActiveData());
-    }, [activeDate, allDailyData])
+    }, [activeDate, allDailyFoodData])
 
 
 

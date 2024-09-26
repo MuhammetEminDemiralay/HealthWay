@@ -6,10 +6,10 @@ import CustomHeader from '../../../../component/customHeader'
 import { RouteParams } from '../../../../datas/routeType'
 import { exercise } from '../../../../datas/exercise'
 import { Exercise, ExerciseOptions, ExerciseParams } from '../../../../model/activity'
-import { Entypo } from '@expo/vector-icons';
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from '../../../../redux/store'
-import { setAsyncstorage } from '../../../../redux/activitySlice'
+import { Entypo, MaterialIcons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '../../../../redux/store'
+import { setAsyncstorage, setExerciseRedux } from '../../../../redux/activitySlice'
 
 
 
@@ -21,6 +21,8 @@ const ExerciseDetailScreen = () => {
     const { width, height } = Dimensions.get("window")
     const [activeMinute, setActiveMinute] = useState<string>();
     const dispatch: AppDispatch = useDispatch()
+    const { allDailyExerciseData, activeDate } = useSelector((state: RootState) => state.activity)
+    const [activeOptions, setActiveOptions] = useState<ExerciseParams[]>([]);
 
     useEffect(() => {
         const isExercise = exercise.find((item: Exercise) => item.exerciseName == value)
@@ -29,14 +31,28 @@ const ExerciseDetailScreen = () => {
         }
     }, [value])
 
+    useEffect(() => {
+        console.log(activeOptions);
+        const dailyAllExercise = allDailyExerciseData.find(({ date }) => date.toDateString() == activeDate.toDateString())?.exercise
+        const targetExerciseOptions = dailyAllExercise?.filter(({ exerciseName }) => exerciseName == value)
+        if (targetExerciseOptions != undefined) {
+            console.log("targetExerciseOptions", targetExerciseOptions);
+
+            setActiveOptions(targetExerciseOptions)
+        }
+    }, [allDailyExerciseData])
+
     const setExercise = (item: string) => {
         dispatch(setAsyncstorage({ exercise: { exerciseName: value, options: item }, subject: 'exercise' }))
+        dispatch(setExerciseRedux({ exerciseName: value, options: item }))
     }
 
     const changeMinute = (item: string) => {
         dispatch(setAsyncstorage({ exercise: { exerciseName: value, options: item, time: Number(activeMinute) }, subject: 'exercise' }))
+        dispatch(setExerciseRedux({ exerciseName: value, options: item, time: Number(activeMinute) }))
     }
 
+    console.log("activeOptions", activeOptions);
 
 
     return (
@@ -70,13 +86,25 @@ const ExerciseDetailScreen = () => {
 
                             <Pressable style={({ pressed }) => [
                                 {
-                                    backgroundColor: pressed ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.25)'
+                                    backgroundColor: pressed ? 'rgba(255,255,255,0.5)' :
+                                        activeOptions.find(({ options }) => options == item.optionName) ?
+                                            'lime' :
+                                            'rgba(255,255,255,0.25)'
                                 },
                                 styles.openExerciseBtn
                             ]}
                                 onPress={() => setExercise(item.optionName)}
                             >
-                                <Entypo name="man" size={24} color="#fff" />
+                                {
+                                    activeOptions.find(({ options }) => options == item.optionName) ?
+                                        <MaterialIcons name="sports-gymnastics" size={24}
+                                            color={
+                                                activeOptions.find(({ options }) => options == item.optionName) ?
+                                                    'black' :
+                                                    '#fff'
+                                            } /> :
+                                        < Entypo name="man" size={24} color="#fff" />
+                                }
                             </Pressable>
                         </View>
                     </View>
