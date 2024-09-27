@@ -19,7 +19,7 @@ export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({
 
         const newExerciseData: ExerciseParams = {
             exerciseName: exercise?.exerciseName,
-            time: exercise?.time != null ? exercise?.time : 30,
+            time: exercise?.time != undefined ? exercise?.time : 30,
             options: exercise?.options
         }
 
@@ -88,25 +88,27 @@ export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({
         //Exercise
         else if (subject == 'exercise') {
 
-            const isExercise = allDailyExerciseData.filter(({ exerciseName }) => exerciseName == exercise?.exerciseName)
 
-            if (isExercise == undefined) {
-                allDailyExerciseData.push(newExerciseData)
-            } else {
-                const isExerciseOption = isExercise.find(({ options }) => options == newExerciseData.options)
-                if (isExerciseOption == undefined) {
-                    allDailyExerciseData.push(newExerciseData)
-                } else {
-                    if (isExerciseOption.time == newExerciseData.time) {
-                        allDailyExerciseData = allDailyExerciseData.filter(({ exerciseName }) => exerciseName != isExerciseOption.exerciseName)
-                    } else {
-                        allDailyExerciseData = allDailyExerciseData.map((item: ExerciseParams) =>
-                            item.exerciseName == exercise?.exerciseName && item.options == exercise?.options ? { ...item, time: newExerciseData.time } : item
-                        )
-                    }
-                }
-            }
+            allDailyExerciseData.some(
+                ({ exerciseName, options }) =>
+                    exerciseName === newExerciseData.exerciseName && options === newExerciseData.options
+            )
+
+                ? allDailyExerciseData = allDailyExerciseData.map(item =>
+                    item.exerciseName === newExerciseData.exerciseName && item.options === newExerciseData.options
+                        ? { ...item, ...newExerciseData }
+                        : item
+                ).filter(({ exerciseName, options, time }) =>
+                    !(
+                        exerciseName === newExerciseData.exerciseName &&
+                        options === newExerciseData.options &&
+                        time === newExerciseData.time
+                    )
+                ) :
+                allDailyExerciseData = [...allDailyExerciseData, newExerciseData];
+
         }
+
 
         await AsyncStorage.setItem(`${state.activity.activeDate.toDateString()}`, JSON.stringify({ data: allDailyFoodData, exercise: allDailyExerciseData }))
 
@@ -278,30 +280,37 @@ const activitySlice = createSlice({
             }
 
             const isDateExercise = state.allDailyExerciseData.find(({ date }) => date.toDateString() == state.activeDate.toDateString())
+            console.log("newExerciseData redux", newExerciseData);
+
 
             if (isDateExercise == undefined) {
                 state.allDailyExerciseData = [...state.allDailyExerciseData, { date: state.activeDate, exercise: [newExerciseData] }]
             } else {
-                if (action.payload.time == undefined) {
-                    console.log("ALL", state.allDailyExerciseData);
-
-                    state.allDailyExerciseData = state.allDailyExerciseData.map((item) =>
-
-                        item.date.toDateString() === state.activeDate.toDateString() ?
-                            {
-                                ...item,
-                                exercise: item.exercise.map((exerciseItem) =>
-                                    exerciseItem.exerciseName === newExerciseData.exerciseName && exerciseItem.options == newExerciseData.options ?
-                                        
-                                ),
-                            }
-                            : item
-                    )
-                }
-
-
+                state.allDailyExerciseData = state.allDailyExerciseData.map((item) =>
+                    item.date.toDateString() === state.activeDate.toDateString() ?
+                        {
+                            ...item,
+                            exercise: item.exercise.some((exerciseItem) =>
+                                exerciseItem.exerciseName === newExerciseData.exerciseName &&
+                                exerciseItem.options === newExerciseData.options
+                            )
+                                ? item.exercise.map((exerciseItem) =>
+                                    exerciseItem.exerciseName === newExerciseData.exerciseName &&
+                                        exerciseItem.options === newExerciseData.options
+                                        ? { ...exerciseItem, ...newExerciseData }
+                                        : exerciseItem
+                                ).filter((exerciseItem) =>
+                                    !(
+                                        exerciseItem.exerciseName === newExerciseData.exerciseName &&
+                                        exerciseItem.options === newExerciseData.options &&
+                                        exerciseItem.time === newExerciseData.time
+                                    )
+                                )
+                                : [...item.exercise, newExerciseData],
+                        } :
+                        item
+                );
             }
-
 
         },
         setProductInformation: (state, action) => {
@@ -328,7 +337,6 @@ const activitySlice = createSlice({
 
             })
             .addCase(getAsyncstorage.fulfilled, (state, action) => {
-
                 state.allDailyFoodData = action.payload.allDailyFoodData;
                 state.allDailyExerciseData = action.payload.allDailyExerciseData;
             })

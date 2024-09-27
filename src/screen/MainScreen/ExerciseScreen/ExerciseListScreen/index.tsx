@@ -29,7 +29,7 @@ const ExerciseListScreen = () => {
                     >
                         <Text style={styles.exerciseName}>{item.exerciseName}</Text>
                         <View style={styles.exerciseInfoBox}>
-                            <Text style={[{ color: 'lime' }, styles.infoText]}>{item.options[0].calorie}cals</Text>
+                            <Text style={[{ color: 'lime' }, styles.infoText]}>{item.options && item.options[0].calorie} cal</Text>
                             <Text style={{ color: '#fff' }}> / </Text>
                             <Text style={[{ color: '#fff' }, styles.infoText]}>{item.time}min</Text>
                         </View>

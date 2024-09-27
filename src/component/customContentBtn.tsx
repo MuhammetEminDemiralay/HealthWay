@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native'
 import { scale } from 'react-native-size-matters'
 import { SimpleLineIcons, MaterialIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
+import { exercise } from '../datas/exercise';
 
 const { width, height } = Dimensions.get("window")
 
@@ -20,7 +21,7 @@ const CustomContentBtn = ({ text, value, icon, onPress }: CustomContenBtnProps) 
 
 
     const dispatch = useDispatch<AppDispatch>();
-    const { activeMealFoodCategory } = useSelector((state: RootState) => state.activity)
+    const { activeMealFoodCategory, allDailyExerciseData, activeDate } = useSelector((state: RootState) => state.activity)
 
 
 
@@ -40,7 +41,7 @@ const CustomContentBtn = ({ text, value, icon, onPress }: CustomContenBtnProps) 
         >
             <Text style={styles.btnTitleText}>{text}</Text>
             <View style={styles.wrapper}>
-                <Text style={styles.btnContenText}>{value}</Text>
+                <Text style={styles.btnContenText}>{0}</Text>
                 {
                     icon == "sports-gymnastics" &&
                     <MaterialIcons name="sports-gymnastics" size={24} color="#4cc9f0" />

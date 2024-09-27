@@ -10,6 +10,7 @@ import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../../../redux/store'
 import { setAsyncstorage, setExerciseRedux } from '../../../../redux/activitySlice'
+import { scale } from 'react-native-size-matters'
 
 
 
@@ -19,7 +20,7 @@ const ExerciseDetailScreen = () => {
     const { value } = route.params;
     const [activeExercise, setActiveExercise] = useState<Exercise>();
     const { width, height } = Dimensions.get("window")
-    const [activeMinute, setActiveMinute] = useState<string>();
+    const [activeMinute, setActiveMinute] = useState<string>("30");
     const dispatch: AppDispatch = useDispatch()
     const { allDailyExerciseData, activeDate } = useSelector((state: RootState) => state.activity)
     const [activeOptions, setActiveOptions] = useState<ExerciseParams[]>([]);
@@ -32,12 +33,9 @@ const ExerciseDetailScreen = () => {
     }, [value])
 
     useEffect(() => {
-        console.log(activeOptions);
         const dailyAllExercise = allDailyExerciseData.find(({ date }) => date.toDateString() == activeDate.toDateString())?.exercise
         const targetExerciseOptions = dailyAllExercise?.filter(({ exerciseName }) => exerciseName == value)
         if (targetExerciseOptions != undefined) {
-            console.log("targetExerciseOptions", targetExerciseOptions);
-
             setActiveOptions(targetExerciseOptions)
         }
     }, [allDailyExerciseData])
@@ -47,12 +45,18 @@ const ExerciseDetailScreen = () => {
         dispatch(setExerciseRedux({ exerciseName: value, options: item }))
     }
 
-    const changeMinute = (item: string) => {
-        dispatch(setAsyncstorage({ exercise: { exerciseName: value, options: item, time: Number(activeMinute) }, subject: 'exercise' }))
+    const onBlur = (item: string) => {
         dispatch(setExerciseRedux({ exerciseName: value, options: item, time: Number(activeMinute) }))
+        dispatch(setAsyncstorage({ exercise: { exerciseName: value, options: item, time: Number(activeMinute) }, subject: 'exercise' }))
     }
 
-    console.log("activeOptions", activeOptions);
+    const onFocus = (item: string) => {
+        const isOption = activeOptions.find(({ options }) => options == item)
+        if (isOption != undefined) {
+            dispatch(setExerciseRedux({ exerciseName: value, options: item }))
+            dispatch(setAsyncstorage({ exercise: { exerciseName: value, options: item }, subject: 'exercise' }))
+        }
+    }
 
 
     return (
@@ -73,14 +77,28 @@ const ExerciseDetailScreen = () => {
                             <View style={styles.exerciseDuration}>
                                 <TextInput
                                     style={styles.timeTextInput}
-                                    placeholder='30 min'
+                                    placeholder={
+                                        activeOptions.find(({ time, options }) =>
+                                            options == item.optionName) != undefined ?
+                                            `${activeOptions.find(({ options }) => options == item.optionName)?.time} min` :
+                                            `30 min`
+                                    }
                                     placeholderTextColor='#4cc9f0'
                                     inputMode='numeric'
                                     onChangeText={(text: string) => setActiveMinute(text)}
-                                    onEndEditing={() => changeMinute(item.optionName)}
+                                    onFocus={() => onFocus(item.optionName)}
+                                    onBlur={() => onBlur(item.optionName)}
                                 />
                                 <View style={styles.calorieBox}>
-                                    <Text style={styles.calorieText}>{item.calorie} cals</Text>
+                                    <Text style={styles.calorieText}>
+                                        {
+                                            (() => {
+                                                const findOptionTime = activeOptions.find(({ options }) => options == item.optionName)?.time;
+                                                return findOptionTime != undefined ? Math.floor((findOptionTime / 30) * (item.calorie ? item.calorie : 1)) : item.calorie
+                                            })()
+                                        } cal
+
+                                    </Text>
                                 </View>
                             </View>
 
@@ -97,13 +115,13 @@ const ExerciseDetailScreen = () => {
                             >
                                 {
                                     activeOptions.find(({ options }) => options == item.optionName) ?
-                                        <MaterialIcons name="sports-gymnastics" size={24}
+                                        <MaterialIcons name="sports-gymnastics" size={scale(22)}
                                             color={
                                                 activeOptions.find(({ options }) => options == item.optionName) ?
                                                     'black' :
                                                     '#fff'
                                             } /> :
-                                        < Entypo name="man" size={24} color="#fff" />
+                                        < Entypo name="man" size={scale(22)} color="#fff" />
                                 }
                             </Pressable>
                         </View>

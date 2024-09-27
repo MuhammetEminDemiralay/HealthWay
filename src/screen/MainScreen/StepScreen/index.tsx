@@ -4,6 +4,9 @@ import CustomHeader from '../../../component/customHeader'
 import { styles } from './styles'
 
 const StepScreen = () => {
+
+    
+
     return (
         <View style={styles.container}>
             <CustomHeader />

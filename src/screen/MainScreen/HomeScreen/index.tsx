@@ -17,6 +17,7 @@ import { Content, DataModel } from '../../../model/activity'
 import { food } from '../../../datas/food'
 import { FoodItem } from '../../../model/food'
 import CalendarStrip from 'react-native-calendar-strip'
+import { Pedometer } from 'expo-sensors'
 
 const HomeScreen = () => {
 
@@ -35,7 +36,10 @@ const HomeScreen = () => {
     useEffect(() => {
         dispatch(getUserInfoAsyncstorage())
         dispatch(getAsyncstorage())
+
     }, [])
+
+    console.log("Tarih", new Date());
 
 
     useEffect(() => {
@@ -48,7 +52,6 @@ const HomeScreen = () => {
 
     useEffect(() => {
         dispatch(setProductInformation(null))
-
         const result = allDailyFoodData.find((item: any) => item.date.toDateString() == activeDate.toDateString())
         if (result != undefined) {
             result.data.forEach((item: Content) => {
@@ -61,6 +64,7 @@ const HomeScreen = () => {
             })
         }
     }, [activeDate, allDailyFoodData])
+
 
 
     const navigate = (route: string) => {
