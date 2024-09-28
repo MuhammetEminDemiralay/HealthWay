@@ -18,6 +18,7 @@ import { food } from '../../../datas/food'
 import { FoodItem } from '../../../model/food'
 import CalendarStrip from 'react-native-calendar-strip'
 import { Pedometer } from 'expo-sensors'
+import { getUser } from '../../../redux/userSlice'
 
 const HomeScreen = () => {
 
@@ -36,10 +37,7 @@ const HomeScreen = () => {
     useEffect(() => {
         dispatch(getUserInfoAsyncstorage())
         dispatch(getAsyncstorage())
-
     }, [])
-
-    console.log("Tarih", new Date());
 
 
     useEffect(() => {
@@ -389,7 +387,7 @@ const HomeScreen = () => {
                                                         height:
                                                             calculateDailyEnergy(date) /
                                                             (dailyRequiredCalories.calorie ? (dailyRequiredCalories.calorie) / (height * 0.075) : 1)
-                                                    },
+                                                    }, 
                                                     styles.periodBtn
                                                 ]
                                             }

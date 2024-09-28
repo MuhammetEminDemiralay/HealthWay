@@ -22,6 +22,7 @@ export interface DailyCalorie {
     activeMealFoodCategory: string,
     allDailyFoodData: FoodDataModel[],
     allDailyExerciseData: ExerciseDataModel[]
+    allDailyWaterData: WaterDataModel[],
     productInformation: FoodItem[],
     exercise?: Exercise[]
 }
@@ -42,9 +43,15 @@ export interface ExerciseDataModel {
     date: Date
 }
 
+export interface WaterDataModel {
+    water: WaterParams[],
+    date: Date
+}
+
 export interface Params {
     food?: FoodParams,
     exercise?: ExerciseParams,
+    water?: WaterParams,
     subject: string
 }
 
@@ -57,6 +64,11 @@ export interface ExerciseParams {
     exerciseName: string | undefined,
     time?: number | undefined,
     options?: string | undefined,
+}
+
+export interface WaterParams {
+    option: string | undefined,
+    date?: Date | undefined
 }
 
 export interface Exercise {

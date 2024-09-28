@@ -27,6 +27,8 @@ export const getUser = createAsyncThunk("user/get", async (_, { getState }) => {
         const ref = doc(db, "user", `${state.auth.uid}`)
         const data = (await getDoc(ref)).data();
 
+        return data
+
     } catch (error) {
         throw error
     }
@@ -53,7 +55,16 @@ const userSlice = createSlice({
 
     },
     extraReducers: (builder) => {
+        builder
+            .addCase(getUser.pending, (state, action) => {
 
+            })
+            .addCase(getUser.fulfilled, (state, action) => {
+
+            })
+            .addCase(getUser.rejected, (state, action) => {
+
+            })
     }
 })
 

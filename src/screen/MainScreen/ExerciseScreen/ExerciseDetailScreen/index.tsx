@@ -33,8 +33,8 @@ const ExerciseDetailScreen = () => {
     }, [value])
 
     useEffect(() => {
-        const dailyAllExercise = allDailyExerciseData.find(({ date }) => date.toDateString() == activeDate.toDateString())?.exercise
-        const targetExerciseOptions = dailyAllExercise?.filter(({ exerciseName }) => exerciseName == value)
+        const isDailyAllExercise = allDailyExerciseData.find(({ date }) => date.toDateString() == activeDate.toDateString())?.exercise
+        const targetExerciseOptions = isDailyAllExercise?.filter(({ exerciseName }) => exerciseName == value)
         if (targetExerciseOptions != undefined) {
             setActiveOptions(targetExerciseOptions)
         }

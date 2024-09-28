@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
         width: width * 0.95,
         height: height * 0.175,
         alignItems: 'center',
-        marginVertical: height * 0.015
+        marginVertical: height * 0.015,
     },
     headerTopContainer: {
         width: width * 0.95,

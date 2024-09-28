@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Content, DailyCalorie, Exercise, ExerciseDataModel, ExerciseParams, FoodDataModel, FoodParams, Params } from "../model/activity";
+import { Content, DailyCalorie, Exercise, ExerciseDataModel, ExerciseParams, FoodDataModel, FoodParams, Params, WaterDataModel, WaterParams } from "../model/activity";
 import { RootState } from "./store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { exercise } from "../datas/exercise";
 
 
 
-export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({ food, exercise, subject }: Params, { getState }) => {
+export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({ food, exercise, water, subject }: Params, { getState }) => {
     try {
         const state: RootState = getState() as RootState
 
@@ -23,9 +23,15 @@ export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({
             options: exercise?.options
         }
 
+        const newWaterData: WaterParams = {
+            option: water?.option,
+            date: new Date()
+        }
+
 
         let allDailyFoodData: Content[] = []
         let allDailyExerciseData: ExerciseParams[] = []
+        let allDailyWaterData: WaterParams[] = []
 
         const isKey = (await AsyncStorage.getAllKeys()).find((date: string) => date == state.activity.activeDate.toDateString())
         if (isKey != undefined) {
@@ -35,6 +41,7 @@ export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({
                 const parseData = JSON.parse(datas);
                 allDailyFoodData = parseData.data;
                 allDailyExerciseData = parseData.exercise;
+                allDailyWaterData = parseData.water;
             }
         }
 
@@ -88,7 +95,6 @@ export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({
         //Exercise
         else if (subject == 'exercise') {
 
-
             allDailyExerciseData.some(
                 ({ exerciseName, options }) =>
                     exerciseName === newExerciseData.exerciseName && options === newExerciseData.options
@@ -106,11 +112,25 @@ export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({
                     )
                 ) :
                 allDailyExerciseData = [...allDailyExerciseData, newExerciseData];
-
         }
 
 
-        await AsyncStorage.setItem(`${state.activity.activeDate.toDateString()}`, JSON.stringify({ data: allDailyFoodData, exercise: allDailyExerciseData }))
+
+        // WATER
+        else if (subject == 'water') {
+            allDailyWaterData.push(newWaterData)
+        }
+
+
+        await AsyncStorage.setItem(
+            `${state.activity.activeDate.toDateString()}`,
+            JSON.stringify(
+                {
+                    data: allDailyFoodData,
+                    exercise: allDailyExerciseData,
+                    water: allDailyWaterData
+                }))
+
 
         return allDailyFoodData
 
@@ -123,17 +143,15 @@ export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({
 export const getAsyncstorage = createAsyncThunk("get/foodAsyncstorage", async (_, { getState }) => {
     try {
 
-        const state: RootState = getState() as RootState
-
         const allKeys = await AsyncStorage.getAllKeys();
         const filterKeys = allKeys.filter((item: string) => item != '_token' && item != '_uid' && item != '_user')
 
         let allDailyFoodData: FoodDataModel[] = []
         let allDailyExerciseData: ExerciseDataModel[] = []
+        let allDailyWaterData: WaterDataModel[] = []
 
         for (let key of filterKeys) {
             const data = await AsyncStorage.getItem(key)
-
 
             let parseData;
             if (data != null) {
@@ -145,12 +163,18 @@ export const getAsyncstorage = createAsyncThunk("get/foodAsyncstorage", async (_
             if (parseData.exercise != undefined) {
                 allDailyExerciseData.push({ date: new Date(key), exercise: parseData.exercise })
             }
+            if (parseData.water != undefined) {
+                allDailyWaterData.push({ date: new Date(key), water: parseData.water })
+            }
         }
 
         const datas = {
             allDailyFoodData: allDailyFoodData,
-            allDailyExerciseData: allDailyExerciseData
+            allDailyExerciseData: allDailyExerciseData,
+            allDailyWaterData: allDailyWaterData
         }
+
+        console.log("AllDailyWater", allDailyWaterData);
 
 
         return datas
@@ -178,6 +202,7 @@ const initialState: DailyCalorie = {
     activeMealFoodCategory: "",
     allDailyFoodData: [],
     allDailyExerciseData: [],
+    allDailyWaterData: [],
     productInformation: []
 }
 
@@ -311,6 +336,32 @@ const activitySlice = createSlice({
                         item
                 );
             }
+        },
+        setWaterRedux: (state, action: PayloadAction<WaterParams>) => {
+
+            const newWaterData: WaterParams = {
+                option: action.payload.option,
+                date: new Date()
+            }
+
+            const isDateWater = state.allDailyWaterData.find(({ date }) => date.toDateString() === state.activeDate.toDateString())
+
+            if (isDateWater == undefined) {
+                state.allDailyWaterData = [...state.allDailyWaterData, { date: state.activeDate, water: [] }]
+            } else {
+                state.allDailyWaterData = state.allDailyWaterData.map((item) =>
+                    item.date.toDateString() === state.activeDate.toDateString() ?
+                        {
+                            ...item,
+                            water: item.water.some(({ date }) => date?.toDateString() == newWaterData.date?.toDateString()) ?
+                                item.water.filter((waterItem) => waterItem.date?.toDateString() !== newWaterData.date?.toDateString()) :
+                                [...item.water, newWaterData]
+                        } :
+                        item
+                )
+            }
+
+
 
         },
         setProductInformation: (state, action) => {
@@ -339,6 +390,7 @@ const activitySlice = createSlice({
             .addCase(getAsyncstorage.fulfilled, (state, action) => {
                 state.allDailyFoodData = action.payload.allDailyFoodData;
                 state.allDailyExerciseData = action.payload.allDailyExerciseData;
+                state.allDailyWaterData = action.payload.allDailyWaterData;
             })
             .addCase(getAsyncstorage.rejected, (state, action) => {
 
@@ -349,4 +401,4 @@ const activitySlice = createSlice({
 
 
 export default activitySlice.reducer
-export const { setDailyRequiredCalories, setCaloriesConsumed, setActiveDate, setActiveMealFoodCategory, setFoodRedux, setExerciseRedux, setProductInformation, setActiveData } = activitySlice.actions 
+export const { setDailyRequiredCalories, setCaloriesConsumed, setActiveDate, setActiveMealFoodCategory, setFoodRedux, setExerciseRedux, setWaterRedux, setProductInformation, setActiveData } = activitySlice.actions 
