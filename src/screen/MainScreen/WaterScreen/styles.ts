@@ -1,4 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
+import { scale } from "react-native-size-matters";
 
 const { width, height } = Dimensions.get("window")
 
@@ -14,21 +15,54 @@ export const styles = StyleSheet.create({
         width: width * 0.95,
         height: height * 0.68,
     },
-    options: {
+    optionsContainer: {
         width: width * 0.95,
         height: height * 0.12,
-        alignItems: 'center',
+        flexDirection: 'row',
+        borderRadius: 10
+    },
+    optionBox: {
+        width: width * 0.3,
+        height: height * 0.12,
         flexDirection: 'row',
     },
+    optionWrapper: {
+        width: width * 0.15,
+        height: height * 0.12,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    progressBox: {
+        width: width * 0.65,
+        height: height * 0.12,
+        alignItems: 'center',
+        justifyContent: 'space-evenly'
+    },
+    progressWrapper: {
+        width: width * 0.65,
+        alignItems: 'center',
+    },
     optionBtn: {
-        width: height * 0.065,
-        height: height * 0.065,
         borderWidth: 1.5,
         borderColor: '#4cc9f0',
         borderRadius: (height * 0.065) / 2,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
+    optionText: {
+        color: '#fff',
+        fontSize: scale(9)
+    },
+    wordBox: {
+        width: width * 0.65,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    wordText: {
+        color: '#fff',
+        fontSize: scale(13)
+    },
+
     diagramContainer: {
         width: width * 0.95,
         height: height * 0.56,
@@ -37,9 +71,33 @@ export const styles = StyleSheet.create({
     diagramBox: {
         width: width * 0.95,
         height: height * 0.25,
+        marginTop: height * 0.03
+    },
+    flatlistContainer: {
+        width: width * 0.95,
+        height: height * 0.25,
+    },
+    hourBox: {
+        width: (width * 0.95) / 6,
+        height: height * 0.25,
+        alignItems: 'center'
+    },
+    contentBox: {
+        width: height * 0.05,
+        height: height * 0.22,
+    },
+    timeBox: {
+        width: '80%',
+        height: height * 0.03,
         borderWidth: 1,
         borderColor: '#fff',
-        marginTop: height * 0.03
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    time: {
+        color: '#fff',
+        fontSize: scale(10),
     },
     periodBorder: {
         width: width * 0.95,
@@ -68,7 +126,6 @@ export const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         borderBottomWidth: 2,
-        backgroundColor: '#4cc9f0'
     },
     bottomBox: {
         width: '100%',

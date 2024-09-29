@@ -8,6 +8,7 @@ import { exercise } from "../datas/exercise";
 
 export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({ food, exercise, water, subject }: Params, { getState }) => {
     try {
+
         const state: RootState = getState() as RootState
 
         const newFoodData: Content = {
@@ -25,7 +26,7 @@ export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({
 
         const newWaterData: WaterParams = {
             option: water?.option,
-            date: new Date()
+            date: water?.date
         }
 
 
@@ -115,10 +116,15 @@ export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({
         }
 
 
-
         // WATER
         else if (subject == 'water') {
-            allDailyWaterData.push(newWaterData)
+            const isWaterDate = allDailyWaterData.find(({ date }) => date == newWaterData.date)
+            if (isWaterDate == undefined) {
+                allDailyWaterData.push(newWaterData)
+            } else {
+                allDailyWaterData = allDailyWaterData.filter(({ date }) => date != newWaterData.date)
+            }
+
         }
 
 
@@ -173,8 +179,6 @@ export const getAsyncstorage = createAsyncThunk("get/foodAsyncstorage", async (_
             allDailyExerciseData: allDailyExerciseData,
             allDailyWaterData: allDailyWaterData
         }
-
-        console.log("AllDailyWater", allDailyWaterData);
 
 
         return datas
@@ -305,8 +309,6 @@ const activitySlice = createSlice({
             }
 
             const isDateExercise = state.allDailyExerciseData.find(({ date }) => date.toDateString() == state.activeDate.toDateString())
-            console.log("newExerciseData redux", newExerciseData);
-
 
             if (isDateExercise == undefined) {
                 state.allDailyExerciseData = [...state.allDailyExerciseData, { date: state.activeDate, exercise: [newExerciseData] }]
@@ -338,23 +340,22 @@ const activitySlice = createSlice({
             }
         },
         setWaterRedux: (state, action: PayloadAction<WaterParams>) => {
-
             const newWaterData: WaterParams = {
                 option: action.payload.option,
-                date: new Date()
+                date: action.payload.date
             }
 
             const isDateWater = state.allDailyWaterData.find(({ date }) => date.toDateString() === state.activeDate.toDateString())
 
             if (isDateWater == undefined) {
-                state.allDailyWaterData = [...state.allDailyWaterData, { date: state.activeDate, water: [] }]
+                state.allDailyWaterData = [...state.allDailyWaterData, { date: state.activeDate, water: [newWaterData] }]
             } else {
                 state.allDailyWaterData = state.allDailyWaterData.map((item) =>
                     item.date.toDateString() === state.activeDate.toDateString() ?
                         {
                             ...item,
-                            water: item.water.some(({ date }) => date?.toDateString() == newWaterData.date?.toDateString()) ?
-                                item.water.filter((waterItem) => waterItem.date?.toDateString() !== newWaterData.date?.toDateString()) :
+                            water: item.water.some(({ date }) => date == newWaterData.date) ?
+                                item.water.filter((waterItem) => waterItem.date !== newWaterData.date) :
                                 [...item.water, newWaterData]
                         } :
                         item

@@ -68,7 +68,7 @@ export interface ExerciseParams {
 
 export interface WaterParams {
     option: string | undefined,
-    date?: Date | undefined
+    date?: string | undefined
 }
 
 export interface Exercise {

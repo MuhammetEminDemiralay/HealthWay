@@ -9,16 +9,12 @@ import { styles } from './styles'
 import CustomContentBtn from '../../../component/customContentBtn'
 import * as Progress from 'react-native-progress'
 import { useNavigation } from '@react-navigation/native'
-import { NavigationProps } from '../../../datas/navigationType'
 import CustomHeader from '../../../component/customHeader'
-import { bmr, calorieCalculation } from '../../../helper/calorieCalculation'
-import { getAsyncstorage, setActiveDate, setActiveMealFoodCategory, setDailyRequiredCalories, setProductInformation } from '../../../redux/activitySlice'
-import { Content, DataModel } from '../../../model/activity'
+import { getAsyncstorage, setActiveDate, setActiveMealFoodCategory, setProductInformation } from '../../../redux/activitySlice'
+import { Content } from '../../../model/activity'
 import { food } from '../../../datas/food'
 import { FoodItem } from '../../../model/food'
 import CalendarStrip from 'react-native-calendar-strip'
-import { Pedometer } from 'expo-sensors'
-import { getUser } from '../../../redux/userSlice'
 
 const HomeScreen = () => {
 
@@ -387,7 +383,7 @@ const HomeScreen = () => {
                                                         height:
                                                             calculateDailyEnergy(date) /
                                                             (dailyRequiredCalories.calorie ? (dailyRequiredCalories.calorie) / (height * 0.075) : 1)
-                                                    }, 
+                                                    },
                                                     styles.periodBtn
                                                 ]
                                             }
