@@ -41,6 +41,13 @@ export const styles = StyleSheet.create({
     progressWrapper: {
         width: width * 0.65,
         alignItems: 'center',
+        justifyContent: 'space-evenly',
+        flexDirection: 'row'
+    },
+    valueBox: {
+        height: height * 0.04,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     optionBtn: {
         borderWidth: 1.5,

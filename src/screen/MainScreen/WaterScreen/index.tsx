@@ -48,13 +48,10 @@ const WaterScreen = () => {
             value = isWaterDate.water.reduce((acc, item) => acc + (item ? (item.option == 'cup' ? 200 : 500) : 0), 0) / (dailyRequiredWater ? (dailyRequiredWater / (height * 0.15)) : 1)
         }
 
-        console.log("value", value);
-
         return isWaterDate ? value : 0
     }
 
 
-    console.log((dailyCalculateWater(activeDate)) / (dailyRequiredWater ? dailyRequiredWater : 1));
 
     return (
         <View style={styles.container}>
@@ -107,10 +104,13 @@ const WaterScreen = () => {
                                 borderColor='#fff'
                                 borderRadius={10}
                                 height={height * 0.02}
-                                progress={dailyCalculateWater(activeDate) / (dailyRequiredWater ? dailyRequiredWater : 1)}
-                                width={width * 0.5}
+                                progress={(dailyCalculateWater(activeDate))}
+                                width={width * 0.4}
                                 color='#4cc9f0'
                             />
+                            <View style={styles.valueBox}>
+                                <Text style={{ color: '#fff' }}>{(dailyCalculateWater(activeDate) * (dailyRequiredWater ? (dailyRequiredWater / (height * 0.15)) : 1))} ml</Text>
+                            </View>
                         </View>
                     </View>
                 </View>

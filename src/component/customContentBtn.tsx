@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native'
 import { scale } from 'react-native-size-matters'
-import { SimpleLineIcons, MaterialIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { SimpleLineIcons, MaterialIcons, Fontisto, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
 import { exercise } from '../datas/exercise';
@@ -44,19 +44,19 @@ const CustomContentBtn = ({ text, value, icon, onPress }: CustomContenBtnProps) 
                 <Text style={styles.btnContenText}>{0}</Text>
                 {
                     icon == "sports-gymnastics" &&
-                    <MaterialIcons name="sports-gymnastics" size={24} color="#4cc9f0" />
+                    <MaterialIcons name="sports-gymnastics" size={scale(22)} color="#4cc9f0" />
                 }
                 {
-                    icon == "footsteps-sharp" &&
-                    <Ionicons name="footsteps-sharp" size={24} color="#4cc9f0" />
+                    icon == "pulse" &&
+                    <Fontisto name="pulse" size={scale(18)} color="#4cc9f0" />
                 }
                 {
                     icon == "cup" &&
-                    <MaterialCommunityIcons name="cup" size={24} color="#4cc9f0" />
+                    <MaterialCommunityIcons name="cup" size={scale(20)} color="#4cc9f0" />
                 }
                 {
                     icon == "note" &&
-                    <SimpleLineIcons name="note" size={24} color="#4cc9f0" />
+                    <SimpleLineIcons name="note" size={scale(20)} color="#4cc9f0" />
                 }
             </View>
         </Pressable>

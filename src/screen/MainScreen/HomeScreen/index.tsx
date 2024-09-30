@@ -98,7 +98,7 @@ const HomeScreen = () => {
             <View style={styles.content}>
                 <View style={styles.leftContent}>
                     <CustomContentBtn text="Exercise" value={0} icon="sports-gymnastics" onPress={() => navigate("exercise")} />
-                    <CustomContentBtn text="Steps" value={0} icon="footsteps-sharp" onPress={() => navigate("step")} />
+                    <CustomContentBtn text="Breath" value={0} icon="pulse" onPress={() => navigate("breath")} />
                     <CustomContentBtn text="Water" value={0} icon="cup" onPress={() => navigate("water")} />
                     <CustomContentBtn text="Notes" value={0} icon="note" onPress={() => navigate("notes")} />
                 </View>
