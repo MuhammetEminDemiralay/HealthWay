@@ -38,7 +38,6 @@ const CustomHeader = () => {
 
     const setTodayDate = () => {
         dispatch(setActiveDate(new Date()))
-
     }
 
 
@@ -72,15 +71,15 @@ const CustomHeader = () => {
             <View style={styles.headerTopContainer}>
                 <Pressable style={styles.backIconBox}>
                     {
-                        activeMealFoodCategory != "health way" &&
+                        activeMealFoodCategory != "" && activeMealFoodCategory != "health way" &&
                         < FontAwesome onPress={() => goBack()} name="long-arrow-left" size={scale(26)} color="#fff" />
                     }
                 </Pressable>
                 <View style={styles.headerTextBox}>
                     {
-                        activeMealFoodCategory != 'health way' ?
-                            <Text style={styles.headerText}>{activeMealFoodCategory}</Text> :
-                            <Text style={styles.headerText}>HEALTH WAY</Text>
+                        activeMealFoodCategory == "" || activeMealFoodCategory == 'healt way' ?
+                            <Text style={styles.headerText}>HEALTH WAY</Text> :
+                            <Text style={styles.headerText}>{activeMealFoodCategory}</Text>
 
                     }
 
@@ -156,13 +155,13 @@ export default CustomHeader
 
 const styles = StyleSheet.create({
     container: {
-        width: width * 0.95,
+        width: width,
         height: height * 0.175,
         alignItems: 'center',
         marginVertical: height * 0.015,
     },
     headerTopContainer: {
-        width: width * 0.95,
+        width: width,
         height: height * 0.075,
         flexDirection: 'row',
         alignItems: 'center',
@@ -178,7 +177,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     headerBottomContainer: {
-        width: width * 0.95,
+        width: width,
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#495057',
@@ -188,7 +187,9 @@ const styles = StyleSheet.create({
     todayBtn: {
         width: width * 0.15,
         height: height * 0.05,
-        borderBottomWidth: 2,
+        borderBottomWidth: 3,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
         borderColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',

@@ -1,7 +1,7 @@
 
 export interface Nutrient {
-    value?: number;
-    unit?: string;
+    value: number;
+    unit: string;
 }
 
 export interface FoodItem {
@@ -43,4 +43,5 @@ export interface FoodItem {
     riboflavin?: Nutrient;
     category?: string;
     subCategory?: string;
+    mealTime?: string;
 }

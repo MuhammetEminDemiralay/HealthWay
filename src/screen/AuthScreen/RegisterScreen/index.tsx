@@ -15,6 +15,7 @@ import * as Yup from "yup"
 import { AppDispatch, RootState } from '../../../redux/store'
 import { setDietCalculate, setUser } from '../../../redux/userSlice'
 import { Auth } from '../../../model/auth'
+import { getUserInfoAsyncstorage } from '../../../redux/onboardingSlice'
 
 
 const RegisterScreen = () => {
@@ -30,6 +31,7 @@ const RegisterScreen = () => {
         const result = await dispatch(googleSignin())
         if (googleSignin.fulfilled.match(result)) {
             dispatch(setUser({ bal, genderAge, heightWeight, reasons, target, weeklyTarget }))
+            dispatch(getUserInfoAsyncstorage({ initialInfo: { bal, genderAge, heightWeight, reasons, target, weeklyTarget } }));
         } else {
             Alert.alert("Error", "Try it again")
         }

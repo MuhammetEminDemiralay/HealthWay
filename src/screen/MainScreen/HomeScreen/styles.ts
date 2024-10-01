@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
         width: width,
         height: height * 0.9,
         alignItems: 'center',
-        backgroundColor: '#212529'
+        backgroundColor: 'black'
     },
     headContainer: {
         width: width * 0.95,
@@ -32,16 +32,18 @@ export const styles = StyleSheet.create({
         fontSize: scale(14)
     },
     content: {
-        width: width * 0.95,
+        width: width * 1,
         height: height * 0.45,
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
         backgroundColor: 'black',
         elevation: 2,
+        borderWidth: 1,
+        borderColor: '#fff'
     },
     leftContent: {
-        width: width * 0.2,
+        width: width * 0.225,
         height: height * 0.45,
     },
     middleContent: {
@@ -123,16 +125,18 @@ export const styles = StyleSheet.create({
         borderRadius: 10
     },
     rightContent: {
-        width: width * 0.2,
+        width: width * 0.225,
         height: height * 0.45,
     },
 
 
     activityContainer: {
-        width: width * 0.95,
+        width: width,
         height: height * 0.23,
         backgroundColor: 'black',
         elevation: 2,
+        borderWidth: 1,
+        borderColor: '#fff'
     },
     progressBarContainer: {
         width: width * 0.95,
@@ -167,11 +171,11 @@ export const styles = StyleSheet.create({
 
     ,
     dailyPeriodProgressContainer: {
-        width: width * 0.95,
+        width: width,
         height: height * 0.15,
     },
     periodBorder: {
-        width: width * 0.95,
+        width: width,
         height: 10,
         position: 'absolute',
         top: height * 0.025,

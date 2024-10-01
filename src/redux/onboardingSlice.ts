@@ -3,22 +3,27 @@ import { Onboarding } from "../model/onboarding";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { bmr, calorieCalculation } from "../helper/calorieCalculation";
 import { setDailyRequiredCalories } from "./activitySlice";
+import { RootState } from "./store";
 
 
 
 
-export const getUserInfoAsyncstorage = createAsyncThunk("get/userInfoAsyncstorage", async (_, { dispatch }) => {
+export const getUserInfoAsyncstorage = createAsyncThunk("get/userInfoAsyncstorage", async ({ initialInfo }: { initialInfo?: Onboarding }, { dispatch, getState }) => {
     try {
+
         const userInfo = await AsyncStorage.getItem("_user")
-        if (userInfo != null) {
-            const info = JSON.parse(userInfo)
-            const bmrInfo = bmr(info)
-            const calorie = calorieCalculation(info, bmrInfo);
-            dispatch(setDailyRequiredCalories(calorie));
-            return info;
-        } else {
-            return null;
+        let info;
+        if (userInfo) {
+            info = JSON.parse(userInfo)
         }
+
+        console.log("initialInfo", initialInfo);
+
+
+        const bmrInfo = bmr(info != null ? info : initialInfo)
+        const calorie = calorieCalculation(info != null ? info : initialInfo, bmrInfo);
+        dispatch(setDailyRequiredCalories(calorie));
+        return info;
 
     } catch (error) {
         throw error

@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Dimensions, Pressable, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { BackHandler, Dimensions, Pressable, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState, } from '../../../redux/store'
-import { Auth } from '../../../model/auth'
 import { getUserInfoAsyncstorage } from '../../../redux/onboardingSlice'
 import { FontAwesome6 } from '@expo/vector-icons';
 import { styles } from './styles'
@@ -19,19 +18,30 @@ import CalendarStrip from 'react-native-calendar-strip'
 const HomeScreen = () => {
 
     const dispatch = useDispatch<AppDispatch>();
-    const { user, uid }: Auth = useSelector((state: any) => state.auth)
-    const { updateProfile } = useSelector((state: RootState) => state.onboarding);
     const { width, height } = Dimensions.get("window")
-    const { dailyRequiredCalories, activeDate, allDailyFoodData, allDailyExerciseData, productInformation } = useSelector((state: RootState) => state.activity)
+    const { dailyRequiredCalories, activeDate, allDailyFoodData, productInformation } = useSelector((state: RootState) => state.activity)
     const navigation: any = useNavigation();
     const [caloriesConsumed, setCaloriesConsumed] = useState(0);
     const [carbohydrate, setCarbohydrate] = useState(0)
     const [protein, setProtein] = useState(0)
     const [fat, setFat] = useState(0)
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+
 
     useEffect(() => {
-        dispatch(getUserInfoAsyncstorage())
+        const backAction = () => {
+            dispatch(setActiveMealFoodCategory("health way"))
+            navigation.goBack()
+            return true
+        };
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+        return () => backHandler.remove();
+    }, []);
+
+    useEffect(() => {
+        dispatch(getUserInfoAsyncstorage({}))
         dispatch(getAsyncstorage())
     }, [])
 
@@ -44,6 +54,8 @@ const HomeScreen = () => {
     }, [productInformation])
 
 
+
+
     useEffect(() => {
         dispatch(setProductInformation(null))
         const result = allDailyFoodData.find((item: any) => item.date.toDateString() == activeDate.toDateString())
@@ -52,7 +64,8 @@ const HomeScreen = () => {
                 const data = food.find((foodData: FoodItem) => foodData.foodName == item.foodName)
                 if (data != undefined) {
                     for (let i = 1; i <= item.amount; i++) {
-                        dispatch(setProductInformation(data))
+                        const newObject = Object.assign({}, data, { mealTime: item.mealTime })
+                        dispatch(setProductInformation(newObject))
                     }
                 }
             })
@@ -97,10 +110,10 @@ const HomeScreen = () => {
 
             <View style={styles.content}>
                 <View style={styles.leftContent}>
-                    <CustomContentBtn text="Exercise" value={0} icon="sports-gymnastics" onPress={() => navigate("exercise")} />
-                    <CustomContentBtn text="Breath" value={0} icon="pulse" onPress={() => navigate("breath")} />
-                    <CustomContentBtn text="Water" value={0} icon="cup" onPress={() => navigate("water")} />
-                    <CustomContentBtn text="Notes" value={0} icon="note" onPress={() => navigate("notes")} />
+                    <CustomContentBtn text="Exercise" icon="sports-gymnastics" onPress={() => navigate("exercise")} />
+                    <CustomContentBtn text="Water" icon="cup" onPress={() => navigate("water")} />
+                    <CustomContentBtn text="Notes" icon="note" onPress={() => navigate("notes")} />
+                    <CustomContentBtn text="Breath" icon="pulse" onPress={() => navigate("breath")} />
                 </View>
 
                 <View style={styles.middleContent}>
@@ -169,10 +182,10 @@ const HomeScreen = () => {
 
                 </View>
                 <View style={styles.rightContent}>
-                    <CustomContentBtn text="Breakfast" value={0} onPress={() => navigate("breakfast")} />
-                    <CustomContentBtn text="Lunch" value={0} onPress={() => navigate("lunch")} />
-                    <CustomContentBtn text="Dinner" value={0} onPress={() => navigate("dinner")} />
-                    <CustomContentBtn text="Snacks" value={0} onPress={() => navigate("snacks")} />
+                    <CustomContentBtn text="Breakfast" onPress={() => navigate("breakfast")} />
+                    <CustomContentBtn text="Lunch" onPress={() => navigate("lunch")} />
+                    <CustomContentBtn text="Dinner" onPress={() => navigate("dinner")} />
+                    <CustomContentBtn text="Snacks" onPress={() => navigate("snacks")} />
                 </View>
 
             </View>
@@ -360,8 +373,8 @@ const HomeScreen = () => {
                         showMonth={false}
                         calendarHeaderStyle={{ height: 0 }}
                         useNativeDriver={true}
-                        iconLeft={null}
-                        iconRight={null}
+                        iconLeft={undefined}
+                        iconRight={undefined}
                         iconLeftStyle={{ width: 0 }}
                         iconRightStyle={{ width: 0 }}
                         dayComponent={({ date }) => (

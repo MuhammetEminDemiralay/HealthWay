@@ -13,13 +13,11 @@ export const styles = StyleSheet.create({
     breathContainer: {
         width: width * 0.95,
         height: height * 0.68,
-        borderWidth: 1,
-        borderColor: '#fff'
     },
     animationBox: {
         width: width * 0.95,
-        height: height * 0.5,
-        borderWidth: 1,
-        borderColor: '#fff'
-    }
+        height: height * 0.68,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
 })

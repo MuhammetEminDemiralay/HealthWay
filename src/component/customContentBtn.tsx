@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native'
 import { scale } from 'react-native-size-matters'
 import { SimpleLineIcons, MaterialIcons, Fontisto, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -11,20 +11,65 @@ const { width, height } = Dimensions.get("window")
 
 interface CustomContenBtnProps {
     text: string,
-    value: number,
     icon?: string,
     onPress: () => void
 }
 
 
-const CustomContentBtn = ({ text, value, icon, onPress }: CustomContenBtnProps) => {
+const CustomContentBtn = ({ text, icon, onPress }: CustomContenBtnProps) => {
 
 
-    const dispatch = useDispatch<AppDispatch>();
-    const { activeMealFoodCategory, allDailyExerciseData, activeDate } = useSelector((state: RootState) => state.activity)
+    const { allDailyExerciseData, productInformation, activeDate, allDailyWaterData, allDailyNotesData } = useSelector((state: RootState) => state.activity)
+    const [breakfast, setBreakfast] = useState(0)
+    const [lunch, setLunch] = useState(0)
+    const [dinner, setDinner] = useState(0)
+    const [snacks, setSnacks] = useState(0)
+    const [dailyExercise, setDailyExercise] = useState(0)
+    const [dailyWater, setDailyWater] = useState(0)
+    const [dailyNotes, setDailyNotes] = useState(0)
+
+    useEffect(() => {
+        setBreakfast(productInformation.filter(({ mealTime }) => mealTime == 'breakfast').reduce((acc, item) => (acc + item.energy.value), 0))
+        setLunch(productInformation.filter(({ mealTime }) => mealTime == 'lunch').reduce((acc, item) => (acc + item.energy.value), 0))
+        setDinner(productInformation.filter(({ mealTime }) => mealTime == 'dinner').reduce((acc, item) => (acc + item.energy.value), 0))
+        setSnacks(productInformation.filter(({ mealTime }) => mealTime == 'snacks').reduce((acc, item) => (acc + item.energy.value), 0))
+    }, [productInformation])
 
 
+    useEffect(() => {
+        const isExerciseData = allDailyExerciseData.find(({ date }) => date.toDateString() == activeDate.toDateString())
+        if (isExerciseData) {
+            let exerciseCalculate = 0;
+            isExerciseData.exercise.forEach((item) => {
+                const value = exercise.find(({ exerciseName }) => exerciseName == item.exerciseName)?.options?.find(({ optionName }) => optionName == item.options)?.calorie
+                if (value) {
+                    exerciseCalculate += (item.time == 30) ? value : value * (item.time ? item.time / 30 : 1)
+                }
+            })
+            setDailyExercise(Math.ceil(exerciseCalculate))
+        } else {
+            setDailyExercise(0)
+        }
+    }, [allDailyExerciseData, activeDate])
 
+
+    useEffect(() => {
+        const isWaterData = allDailyWaterData.find(({ date }) => date.toDateString() == activeDate.toDateString())
+        if (isWaterData) {
+            setDailyWater(isWaterData.water.reduce((acc, item) => acc + (item.option == 'cup' ? 200 : 500), 0))
+        } else {
+            setDailyWater(0)
+        }
+    }, [allDailyWaterData, activeDate])
+
+    useEffect(() => {
+        const isNotesData = allDailyNotesData.find(({ date }) => date.toDateString() == activeDate.toDateString())
+        if (isNotesData) {
+            setDailyNotes(isNotesData.notes.length)
+        } else {
+            setDailyNotes(0)
+        }
+    }, [allDailyNotesData, activeDate])
 
     return (
         <Pressable style={({ pressed }) => [
@@ -41,7 +86,17 @@ const CustomContentBtn = ({ text, value, icon, onPress }: CustomContenBtnProps) 
         >
             <Text style={styles.btnTitleText}>{text}</Text>
             <View style={styles.wrapper}>
-                <Text style={styles.btnContenText}>{0}</Text>
+                <Text style={styles.btnContenText}>
+                    {
+                        text == 'Breakfast' ? breakfast :
+                            text == 'Lunch' ? lunch :
+                                text == 'Dinner' ? dinner :
+                                    text == 'Snacks' ? snacks :
+                                        text == 'Exercise' ? dailyExercise :
+                                            text == 'Water' ? dailyWater :
+                                                text == 'Notes' && dailyNotes
+                    }
+                </Text>
                 {
                     icon == "sports-gymnastics" &&
                     <MaterialIcons name="sports-gymnastics" size={scale(22)} color="#4cc9f0" />
@@ -70,13 +125,13 @@ export default CustomContentBtn
 
 const styles = StyleSheet.create({
     btnContent: {
-        width: width * 0.2,
+        width: width * 0.225,
         height: (height * 0.45) / 4,
         alignItems: 'center',
         justifyContent: 'center',
     },
     btnTitleText: {
-        width: width * 0.2,
+        width: width * 0.225,
         height: height * 0.025,
         textAlignVertical: 'center',
         textAlign: 'center',
@@ -95,6 +150,6 @@ const styles = StyleSheet.create({
     btnContenText: {
         color: '#4cc9f0',
         fontSize: scale(16),
-        fontWeight: '700'
+        fontWeight: '700',
     },
 })

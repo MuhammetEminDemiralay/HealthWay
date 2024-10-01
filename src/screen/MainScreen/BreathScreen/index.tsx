@@ -1,12 +1,15 @@
-import React from 'react'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import React, { useRef, useState } from 'react'
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native'
 import CustomHeader from '../../../component/customHeader'
 import { styles } from './styles'
 import LottieView from 'lottie-react-native'
+import CustomBtn from '../../../component/customBtn'
 
 const BreathScreen = () => {
 
     const { width, height } = Dimensions.get("window")
+    const [state, setState] = useState<boolean>(false)
+
 
 
     return (
@@ -18,7 +21,7 @@ const BreathScreen = () => {
                         autoPlay={true}
                         style={{
                             width: width * 0.95,
-                            height: 450,
+                            height : height * 0.68
                         }}
                         source={require("../../../../assets/animation/breath.json")}
                     />

@@ -9,7 +9,7 @@ import { exercise } from "../datas/exercise";
 export const setAsyncstorage = createAsyncThunk("set/foodAsyncstorage", async ({ food, exercise, water, notes, subject }: Params, { getState }) => {
     try {
 
-        const state: RootState = getState() as RootState
+        const state = getState() as RootState
 
         const newFoodData: Content = {
             foodName: food?.foodName,
@@ -414,7 +414,7 @@ const activitySlice = createSlice({
             } else {
                 state.productInformation = []
             }
-        }
+        },
     },
     extraReducers: (builder) => {
         builder
